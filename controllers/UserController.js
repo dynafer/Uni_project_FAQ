@@ -1,9 +1,17 @@
-const User = require('../models/User')
-const dbName = 'website.db'
+
+'use strict'
+
+var LoginService = require('../services/UserServices/LoginService')
 
 module.exports = {
     home: async ctx => {
         try {
+            let checkLoggedin = false
+            if(ctx.session.authorised !== true) {
+                checkLoggedin = false
+            } else {
+                checkLoggedin = true
+            }
             await ctx.render('index', {check: checkLoggedin})
         } catch(err) {
             console.log(err)
@@ -19,10 +27,10 @@ module.exports = {
     login: async ctx => {
         try {
             const body = ctx.request.body
-            const user = await new User(dbName)
-            await user.login(body.user, body.pass)
-            ctx.session.authorised = true
-            return ctx.redirect('/?msg=you are now logged in...')
+            const data = await LoginService.login(body)
+            ctx.session.userid = data.userid
+            ctx.session.authorised = data.authorised
+            return ctx.redirect('/')
         } catch(err) {
             await ctx.render('error', {message: err.message})
         }
@@ -31,22 +39,10 @@ module.exports = {
         await ctx.render('register')
     },
     register: async ctx => {
-        try {
-            // extract the data from the request
-            const body = ctx.request.body
-            console.log(body)
-            // call the functions in the module
-            const user = await new User(dbName)
-            await user.register(body.user, body.pass)
-            // await user.uploadPicture(path, type)
-            // redirect to the home page
-            ctx.redirect(`/?msg=new user "${body.name}" added`)
-        } catch(err) {
-            await ctx.render('error', {message: err.message})
-        }
     },
     logout: async ctx => {
         ctx.session.authorised = null
-        ctx.redirect('/?msg=you are now logged out')
+        ctx.session.userid = null
+        ctx.redirect('/')
     }
 }
