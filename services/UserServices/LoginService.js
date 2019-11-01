@@ -1,3 +1,6 @@
+
+'use strict'
+
 var userModel = require('../../models/User')
 
 exports.login = async function (query) {
