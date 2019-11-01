@@ -6,7 +6,7 @@ const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
 const router = new Router()
 
 /* IMPORT CUSTOM MODULES */
-const User = require('./modules/user')
+const User = require('./models/User')
 
 const dbName = 'website.db'	
 /**
