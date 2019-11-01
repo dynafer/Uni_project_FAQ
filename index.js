@@ -42,9 +42,6 @@ const dbName = 'website.db'
  */
 router.get('/', async ctx => {
 	try {
-		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
-		const data = {}
-		if(ctx.query.msg) data.msg = ctx.query.msg
 		await ctx.render('index')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
