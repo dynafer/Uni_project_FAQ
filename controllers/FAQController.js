@@ -1,6 +1,8 @@
 
 'use strict'
 
+const jimp = require('jimp')
+
 // Question Services
 var QuestionListService = require('../services/QuestionServices/QuestionListService')
 var NewQuestionService = require('../services/QuestionServices/NewQuestionService')
@@ -76,6 +78,16 @@ module.exports = {
             }
             await ctx.render('detailsQuestion', options)
         } catch(err) {
+            await ctx.render('error', {message: err.message})
+        }
+    },
+    fullImage: async ctx => {
+        try {
+            var encodedData
+            const readImage = await jimp.read(`./public/upload/FAQ/${ctx.params.id}.${ctx.query.type}`)
+            readImage.getBase64(jimp.AUTO , function(e, img64){ encodedData = img64 })
+            await ctx.render('viewFullImage', {encoded: encodedData})
+        } catch (err) {
             await ctx.render('error', {message: err.message})
         }
     }
