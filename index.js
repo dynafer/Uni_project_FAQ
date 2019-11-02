@@ -35,8 +35,8 @@ const defaultPort = 8080
 const port = process.env.PORT || defaultPort 
 
 
-app.use(userRouter.routes())
-app.use(userRouter.allowedMethods())
+app.use(UserRouter.routes())
+app.use(UserRouter.allowedMethods())
 app.use(FAQRouter.routes())
 app.use(FAQRouter.allowedMethods())
 module.exports = app.listen(port, async() => console.log(`listening on port ${port}`))
