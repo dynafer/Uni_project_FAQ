@@ -107,4 +107,19 @@ module.exports = class FAQ {
 			throw err
 		}
     }
+    
+    async flagAnswer(query) {
+		try {
+            const sql = `UPDATE answers SET flagged = ${query.flagtype} WHERE id = ${query.answerId}`
+            await this.db.run(sql)
+            if(query.flagtype === 1) {
+                const sql2 = `UPDATE questions SET solved = 1 WHERE id = ${query.faqId}`
+                await this.db.run(sql2)
+            }
+			return true
+		} catch(err) {
+			console.log(err)
+			throw err
+		}
+    }
 }

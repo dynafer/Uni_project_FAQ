@@ -12,6 +12,7 @@ var DetailQuestionService = require('../services/QuestionServices/DetailQuestion
 // Answer Services
 var AnswerListService = require('../services/AnswerServices/AnswerListService')
 var NewAnswerService = require('../services/AnswerServices/NewAnswerService')
+var FlagAnswerService = require('../services/AnswerServices/FlagAnswerService')
 
 module.exports = {
     questionList: async ctx => {
@@ -104,6 +105,16 @@ module.exports = {
         try {
             const body = ctx.request.body
             await NewAnswerService.newAnswer({faqId: parseInt(ctx.params.id), description: body.answerInput, author: ctx.session.userid})
+            ctx.redirect('/faq/' + ctx.params.id)
+        } catch(err) {
+            await ctx.render('error', {message: err.message})
+        }
+    },
+    flagAnswer: async ctx => {
+        try {
+            await FlagAnswerService.flagAnswer({faqId: parseInt(ctx.params.id), sessionId: ctx.session.userid, answerId: parseInt(ctx.params.answerid), flagtype: parseInt(ctx.params.flagtype)})
+            const getAnswer = await AnswerListService.getAnswers({id: parseInt(ctx.params.answerid)})
+            if(getAnswer.nolist !== undefined) throw Error(`Error during contributing`)
             ctx.redirect('/faq/' + ctx.params.id)
         } catch(err) {
             await ctx.render('error', {message: err.message})
