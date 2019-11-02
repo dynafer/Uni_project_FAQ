@@ -17,6 +17,8 @@ module.exports = class FAQ {
 			await this.db.run(thumbnail)
 			const answer = 'CREATE TABLE IF NOT EXISTS answers (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT, flagged INTEGER(2) DEFAULT 0, faqId INTEGER(100), authorId INTEGER(100), createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP);'
 			await this.db.run(answer)
+			const answerRate = 'CREATE TABLE IF NOT EXISTS answersRate (id INTEGER PRIMARY KEY AUTOINCREMENT, userId INTEGER(100), answerId INTEGER(100), rate INTEGER(5));'
+			await this.db.run(answerRate)
 			return this
 		})()
 	}
@@ -107,4 +109,47 @@ module.exports = class FAQ {
 			throw err
 		}
     }
+    
+    async flagAnswer(query) {
+		try {
+            const sql = `UPDATE answers SET flagged = ${query.flagtype} WHERE id = ${query.answerId}`
+            await this.db.run(sql)
+            if(query.flagtype === 1) {
+                const sql2 = `UPDATE questions SET solved = 1 WHERE id = ${query.faqId}`
+                await this.db.run(sql2)
+            }
+			return true
+		} catch(err) {
+			console.log(err)
+			throw err
+		}
+    }
+
+    async getAnswerRates(query) {
+		try {
+            var sql, records
+            if(query.userId === undefined) {
+                sql = `SELECT * FROM answersRate WHERE answerId = ? ORDER BY id DESC`
+                records = await this.db.all(sql, query.answerId)
+            } else {
+                sql = `SELECT * FROM answersRate WHERE userId = ? AND answerId = ? ORDER BY id DESC`
+                records = await this.db.all(sql, query.userId, query.answerId)
+            }
+			if(records === undefined || records.length === 0) return {nolist: true};
+			return records;
+		} catch(err) {
+			throw err
+		}
+    }
+
+	async newRate(query) {
+		try {
+            const sql = `INSERT INTO answersRate(userId, answerId, rate) VALUES(${query.sessionId}, ${query.answerId}, ${query.rate})`
+			await this.db.run(sql)
+			return true
+		} catch(err) {
+			console.log(err)
+			throw err
+		}
+	}
 }

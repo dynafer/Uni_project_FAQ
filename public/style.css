@@ -92,7 +92,15 @@ body {
   padding: 10px 10px;
   width: 100%;
   font-size: 0.9em;
+}
+.detailQuestion > .answerList > .noflag {
   border: 1px solid #888;
+}
+.detailQuestion > .answerList > .solved {
+  border: 1px solid green;
+}
+.detailQuestion > .answerList > .improper {
+  border: 1px solid red;
 }
 .detailQuestion > .footer {
   border-top: 1px solid black;
@@ -122,4 +130,70 @@ body {
   display: table-cell;
   width: 100%;
   height: 100px;
+}
+
+.rating { 
+  border: none;
+}
+
+.rating > input { display: none; } 
+.rating > label:before { 
+  margin: 5px;
+  font-size: 1.25em;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f005";
+  cursor: pointer;
+}
+
+.rating > .half:before { 
+  content: "\f089";
+  position: absolute;
+}
+
+.rating > label { 
+  color: #ddd; 
+ float: right; 
+}
+
+.rating > input:checked ~ label, 
+.rating:not(:checked) > label:hover, 
+.rating:not(:checked) > label:hover ~ label { color: #FFD700;  } 
+
+.rating > input:checked + label:hover, 
+.rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label, 
+.rating > input:checked ~ label:hover ~ label { color: #FFED85;  } 
+
+.rated { 
+  border: none;
+}
+
+.rated > span:before { 
+  margin: 5px;
+  font-size: 1.25em;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f005";
+}
+
+.rated > .half:before { 
+  content: "\f089";
+  position: absolute;
+}
+
+.rated > span { 
+  color: #ddd;
+}
+
+.rated > .checked {
+  color: #FFD700;
+}
+
+.rankedStar:before { 
+  margin: 5px;
+  font-size: 1.25em;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f005";
 }
