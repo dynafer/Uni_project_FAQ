@@ -1,0 +1,32 @@
+
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Home Page</title>
+		<meta name="description" content="Form of writing a new question">
+		<meta name="author" content="Haseong Kim">
+		<link href="style.css" type="text/css" rel="stylesheet" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<center>
+			<h1>Frequently Asked Questions</h1>
+			{{#if check}}
+				<p><a href="/logout">Log out</a></p>
+			{{else}}
+				<p><a href="/login">Log in</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/register">Register</a></p>
+			{{/if}}
+			<p><a href="/list">List</a>{{#if check}}&nbsp;&nbsp;&nbsp;&nbsp;<a href="/writeQuestion">Ask</a>{{/if}}</p>
+
+			<form action="/writeQuestion" enctype="multipart/form-data" method="post" class="writeForm">
+				<textarea style="display: none;" name="description"></textarea>
+				<p>Short Title:<br /><input type="text" maxlength="40" class="writeTitle" name="title" placeholder="Enter a short title" value="" autofocus></p>
+				<p>Description:<br /><div name="description" class="writeDescription" onkeydown="$('textarea[name=description]').val($(this).html())" onkeypress="$('textarea[name=description]').val($(this).html())" onkeyup="$('textarea[name=description]').val($(this).html())" contenteditable="true"></div></p>
+				<p>Screenshot or Picture:<br /><input type="file" name="image" accept="image/*"></p>
+				<p><input type="submit" value="Post"></p>
+			</form>
+		</center>
+	</body>
+</html>

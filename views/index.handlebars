@@ -13,10 +13,11 @@
 		<center>
 			<h1>Frequently Asked Questions</h1>
 			{{#if check}}
-			<p><a href="/logout">Log out</a></p>
+				<p><a href="/logout">Log out</a></p>
 			{{else}}
-			<p><a href="/login">Log in</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/register">Register</a></p>
+				<p><a href="/login">Log in</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/register">Register</a></p>
 			{{/if}}
+			<p><a href="/list">List</a>{{#if check}}&nbsp;&nbsp;&nbsp;&nbsp;<a href="/writeQuestion">Ask</a>{{/if}}</p>
 		</center>
 	</body>
 </html>
