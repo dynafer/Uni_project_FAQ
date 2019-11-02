@@ -92,7 +92,15 @@ body {
   padding: 10px 10px;
   width: 100%;
   font-size: 0.9em;
+}
+.detailQuestion > .answerList > .noflag {
   border: 1px solid #888;
+}
+.detailQuestion > .answerList > .solved {
+  border: 1px solid green;
+}
+.detailQuestion > .answerList > .improper {
+  border: 1px solid red;
 }
 .detailQuestion > .footer {
   border-top: 1px solid black;

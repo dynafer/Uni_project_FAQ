@@ -52,10 +52,51 @@
 					{{else}}
 						{{#each getAnswers as |value key|}}
 							{{#with this}}
-								<table cellspacing="0" cellpadding="0">
+								<table cellspacing="0" cellpadding="0" class="{{#if_eq flagged 1}}solved{{else}}{{#if_eq flagged 2}}improper{{else}}noflag{{/if_eq}}{{/if_eq}}">
+									{{#if_eq flagged 1}}
+										<tr>
+											<td colspan="3"><img src="../greenflag.png"> <font color="green">Flagged as <strong>Solved</strong></font></td>
+										</tr>
+									{{else}}
+										{{#if_eq flagged 2}}
+											<tr>
+												<td colspan="3"><img src="../redflag.png"> <font color="red">Flagged as <strong>Inappropriate</strong></font></td>
+											</tr>
+										{{/if_eq}}
+									{{/if_eq}}
 									<tr>
 										<td rowspan="2" width="60px"><img width="50px" height="50px" src="../avatars/{{author}}.png" onerror="this.src='../avatars/avatar.png';"></td>
 										<td><strong>{{author}}</strong></td>
+										<td rowspan="2" align="right">
+										{{#if_eq sessionid questionAuthor}}
+											{{#if_eq solved 0}}
+												{{#if_eq flagged 0}}
+													<button request-id="{{id}}" opened-menu="hide" onclick="openMenu({{id}});">Flag</button>
+													<ul parent-id="{{id}}" class="flagMenu">
+														<li request="1">Flag as <strong>Solved</strong></li>
+														<li request="2">Flag as <strong>Inappropriate</strong></li>
+													</ul>
+													<script>
+														$('.flagMenu').hide();
+														function openMenu(id) {
+															if($('button[request-id='+id+']').attr('opened-menu') === 'hide') {
+																$('button[request-id='+id+']').attr('opened-menu', 'opened')
+																$('ul[parent-id='+id+']').show()
+																$('.flagMenu').css({"list-style-type": "none", "position": "absolute", "margin": "0", "padding": "0", "top": ($('button[request-id=' + id + ']').offset().top + $('button[request-id=' + id + ']').offset().height), "left": $('button[request-id=' + id + ']').offset().left, "border": "1px solid black"})
+																$('.flagMenu').children().css({"text-align": "left", "background-color": "white", "padding": "5px", "border-bottom": "1px solid black", "cursor": "pointer"})
+																$('.flagMenu').children().on("click", function() {
+																	location.href="./{{faqId}}/" + id + "/" + $(this).attr("request")
+																})
+															} else {
+																$('button[request-id='+id+']').attr('opened-menu', 'hide')
+																$('ul[parent-id='+id+']').hide()
+															}
+														}
+													</script>
+												{{/if_eq}}
+											{{/if_eq}}
+										{{/if_eq}}
+										</td>
 									</tr>
 									<tr>
 										<td>
