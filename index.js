@@ -10,11 +10,19 @@ const views = require('koa-views')
 const staticDir = require('koa-static')
 const bodyParser = require('koa-bodyparser')
 const session = require('koa-session')
+const handlebars = require('handlebars')
 const UserRouter = require('./routes/UserRouter')
-//const jimp = require('jimp')
+const FAQRouter = require('./routes/FAQRouter')
 
 const app = new Koa()
 
+handlebars.registerHelper("if_eq", function(a, b, opts) {
+    if (a == b) {
+        return opts.fn(this);
+    } else {
+        return opts.inverse(this);
+    }
+})
 
 /* CONFIGURING THE MIDDLEWARE */
 app.keys = ['darkSecret']
@@ -27,5 +35,8 @@ const defaultPort = 8080
 const port = process.env.PORT || defaultPort 
 
 
-app.use(UserRouter.routes())
+app.use(userRouter.routes())
+app.use(userRouter.allowedMethods())
+app.use(FAQRouter.routes())
+app.use(FAQRouter.allowedMethods())
 module.exports = app.listen(port, async() => console.log(`listening on port ${port}`))
