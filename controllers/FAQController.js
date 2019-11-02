@@ -5,6 +5,7 @@
 var QuestionListService = require('../services/QuestionServices/QuestionListService')
 var NewQuestionService = require('../services/QuestionServices/NewQuestionService')
 var UploadPictureService = require('../services/QuestionServices/UploadPictureService')
+var DetailQuestionService = require('../services/QuestionServices/DetailQuestionService')
 
 module.exports = {
     questionList: async ctx => {
@@ -56,6 +57,25 @@ module.exports = {
             ctx.redirect(`/list`)
         } catch(err) {
             console.log(err)
+            await ctx.render('error', {message: err.message})
+        }
+    },
+    detailsQuestion: async ctx => {
+        try {
+            let checkLoggedin = false
+            if(ctx.session.authorised !== true) {
+                checkLoggedin = false
+            } else {
+                checkLoggedin = true
+            }
+            const detail = await DetailQuestionService.detailsQuestion({faqId: parseInt(ctx.params.id)})
+            if(detail.nolist === undefined) {
+                var options = {check: checkLoggedin, sessionid: ctx.session.userid, getInfo: detail}
+            } else {
+                throw Error("No FAQ found")
+            }
+            await ctx.render('detailsQuestion', options)
+        } catch(err) {
             await ctx.render('error', {message: err.message})
         }
     }
