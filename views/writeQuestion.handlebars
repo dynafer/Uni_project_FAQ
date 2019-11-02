@@ -20,7 +20,7 @@
 			{{/if}}
 			<p><a href="/list">List</a>{{#if check}}&nbsp;&nbsp;&nbsp;&nbsp;<a href="/writeQuestion">Ask</a>{{/if}}</p>
 
-			<form action="/writeFAQ" enctype="multipart/form-data" method="post" class="writeForm">
+			<form action="/writeQuestion" enctype="multipart/form-data" method="post" class="writeForm">
 				<textarea style="display: none;" name="description"></textarea>
 				<p>Short Title:<br /><input type="text" maxlength="40" class="writeTitle" name="title" placeholder="Enter a short title" value="" autofocus></p>
 				<p>Description:<br /><div name="description" class="writeDescription" onkeydown="$('textarea[name=description]').val($(this).html())" onkeypress="$('textarea[name=description]').val($(this).html())" onkeyup="$('textarea[name=description]').val($(this).html())" contenteditable="true"></div></p>

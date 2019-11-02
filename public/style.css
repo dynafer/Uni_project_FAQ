@@ -31,13 +31,13 @@ body {
   padding: 10px 10px;
 }
 
-.writeForm > .writeTitle {
-  width:500px;
+.writeForm > p > .writeTitle {
+  width: 500px;
 }
 
 .writeForm > .writeDescription {
-  width:500px;
-  height:300px;
+  width: 500px;
+  height: 300px;
   border: 1px solid black;
   text-align: left;
   overflow-y: scroll;
