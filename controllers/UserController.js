@@ -2,6 +2,7 @@
 'use strict'
 
 var LoginService = require('../services/UserServices/LoginService')
+var RegisterService = require('../services/UserServices/RegisterService')
 
 module.exports = {
     home: async ctx => {
@@ -39,6 +40,15 @@ module.exports = {
         await ctx.render('register')
     },
     register: async ctx => {
+        try {
+            // extract the data from the request
+            const body = ctx.request.body
+            await RegisterService.register(body)
+            // redirect to the home page
+            ctx.redirect(`/`)
+        } catch(err) {
+            await ctx.render('error', {message: err.message})
+        }
     },
     logout: async ctx => {
         ctx.session.authorised = null
