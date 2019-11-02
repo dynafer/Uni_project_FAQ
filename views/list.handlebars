@@ -20,8 +20,36 @@
 			    <p><a href="/list">List</a></p>
 
 			<div class="list">
-                The list of questions
+				<div class="listHeader">
+					<div class="listHeaderEach"><b>#</b></div>
+					<div class="listHeaderEach"><b>Author</b></div>
+					<div class="listHeaderEach"><b>Title</b></div>
+					<div class="listHeaderEach"><b>Date</b></div>
+					<div class="listHeaderEach"><b>Solved</b></div>
+				</div>
+				{{#if_eq list.nolist true}}
 			</div>
+					<h2>No lists found</h2>
+				{{else}}
+					{{#each list as |value key|}}
+						<div class="listEach">
+							{{#with this}}
+								<div class="listEachCell">{{id}}</div>
+								<div class="listEachCell">{{author}}</div>
+								<div class="listEachCell">{{title}}</div>
+								<div class="listEachCell">{{createDate}}</div>
+								<div request-solved="status" class="listEachCell">
+									{{#if_eq solved 0}}
+										<font color="red">Not yet</font>
+									{{else}}
+										<font color="green">Solved</font>
+									{{/if_eq}}
+								</div>
+							{{/with}}
+						</div>
+					{{/each}}
+			</div>
+				{{/if_eq}}
 		</center>
 	</body>
 </html>
