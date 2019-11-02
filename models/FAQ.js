@@ -67,4 +67,14 @@ module.exports = class FAQ {
 			throw err
 		}
     }
+    
+    async QuestionThumbnail(query) {
+        try {
+			const image_sql = `SELECT encoded FROM questionThumbnails WHERE faqId = ?`
+			const getData = await this.db.get(image_sql, query.id)
+			return getData.encoded
+        } catch (err) {
+            throw err
+        }
+    }
 }
