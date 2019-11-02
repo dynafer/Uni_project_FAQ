@@ -4,6 +4,7 @@
 // Question Services
 var QuestionListService = require('../services/QuestionServices/QuestionListService')
 var NewQuestionService = require('../services/QuestionServices/NewQuestionService')
+var UploadPictureService = require('../services/QuestionServices/UploadPictureService')
 
 module.exports = {
     questionList: async ctx => {
@@ -47,7 +48,11 @@ module.exports = {
                 body.imageType = ""
             }
             body.author = ctx.session.userid
-            await NewQuestionService.newQuestion(body)
+            const checkTrue = await NewQuestionService.newQuestion(body)
+            if(checkTrue === true && size !== 0) {
+                const getList = (await QuestionListService.getQuestions({}))[0]
+                await UploadPictureService.uploadPicture({listid: getList.id, path: path, type: type})
+            }
             ctx.redirect(`/list`)
         } catch(err) {
             console.log(err)
