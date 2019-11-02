@@ -164,3 +164,36 @@ body {
 .rating > input:checked ~ label:hover,
 .rating > label:hover ~ input:checked ~ label, 
 .rating > input:checked ~ label:hover ~ label { color: #FFED85;  } 
+
+.rated { 
+  border: none;
+}
+
+.rated > span:before { 
+  margin: 5px;
+  font-size: 1.25em;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f005";
+}
+
+.rated > .half:before { 
+  content: "\f089";
+  position: absolute;
+}
+
+.rated > span { 
+  color: #ddd;
+}
+
+.rated > .checked {
+  color: #FFD700;
+}
+
+.rankedStar:before { 
+  margin: 5px;
+  font-size: 1.25em;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f005";
+}
