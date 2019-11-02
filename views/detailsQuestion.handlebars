@@ -42,6 +42,34 @@
 						</div>
 					{{/if_eq}}
 				{{/with}}
+				<div class="answerList">
+					{{#if noAnswer}}
+					<table cellspacing="0" cellpadding="0">
+						<tr>
+							<td><h3>No Answers found</h3></td>
+						</tr>
+					</table>
+					{{else}}
+						{{#each getAnswers as |value key|}}
+							{{#with this}}
+								<table cellspacing="0" cellpadding="0">
+									<tr>
+										<td rowspan="2" width="60px"><img width="50px" height="50px" src="../avatars/{{author}}.png" onerror="this.src='../avatars/avatar.png';"></td>
+										<td><strong>{{author}}</strong></td>
+									</tr>
+									<tr>
+										<td>
+											Answered {{createDate}}
+										</td>
+									</tr>
+									<tr>
+										<td id="answer_description"colspan="2">{{{description}}}</td>
+									</tr>
+								</table>
+							{{/with}}
+						{{/each}}
+					{{/if}}
+				</div>
 				{{#if check}}
 					{{#if_eq getInfo.solved 0}}
 						<div class="footer">
