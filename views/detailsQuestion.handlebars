@@ -8,6 +8,7 @@
 		<meta name="description" content="Detail of a selected question page">
 		<meta name="author" content="Haseong Kim">
 		<link href="../style.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	</head>
 	<body>
@@ -68,45 +69,81 @@
 										<td rowspan="2" width="60px"><img width="50px" height="50px" src="../avatars/{{author}}.png" onerror="this.src='../avatars/avatar.png';"></td>
 										<td><strong>{{author}}</strong></td>
 										<td rowspan="2" align="right">
-										{{#if_eq sessionid questionAuthor}}
-											{{#if_eq solved 0}}
-												{{#if_eq flagged 0}}
-													<button request-id="{{id}}" opened-menu="hide" onclick="openMenu({{id}});">Flag</button>
-													<ul parent-id="{{id}}" class="flagMenu">
-														<li request="1">Flag as <font color="green"><strong>Solved</strong></font></li>
-														<li request="2">Flag as <font color="red"><strong>Inappropriate</strong></font></li>
-													</ul>
-													<script>
-														$('.flagMenu').hide();
-														function openMenu(id) {
-															if($('button[request-id='+id+']').attr('opened-menu') === 'hide') {
-																$('button[request-id='+id+']').attr('opened-menu', 'opened')
-																$('ul[parent-id='+id+']').show()
-																$('.flagMenu').css({"list-style-type": "none",
-																					"position": "absolute",
-																					"margin": "0",
-																					"padding": "0",
-																					"top": ($('button[request-id=' + id + ']').offset().top + $('button[request-id=' + id + ']').offset().height),
-																					"left": $('button[request-id=' + id + ']').offset().left, "border": "1px solid black"
-																					})
-																$('.flagMenu').children().css({"text-align": "left",
-																								"background-color": "white",
-																								"padding": "5px",
-																								"border-bottom":"1px solid black",
-																								"cursor": "pointer"
-																								})
-																$('.flagMenu').children().on("click", function() {
-																	location.href="./{{faqId}}/" + id + "/" + $(this).attr("request")
-																})
-															} else {
-																$('button[request-id='+id+']').attr('opened-menu', 'hide')
-																$('ul[parent-id='+id+']').hide()
-															}
+											{{#if sessionid}}
+												<button request-rate="{{id}}" onclick="open_rate({{id}})">Rate</button><br />
+												<div id="menuRating{{id}}" opened-rate="hide">
+													<fieldset name="{{id}}" class="rating">
+														<input type="radio" id="star5{{id}}" name="rating{{id}}" value="5" /><label class = "full" for="star5{{id}}"></label>
+														<input type="radio" id="star4half{{id}}" name="rating{{id}}" value="4.5" /><label class="half" for="star4half{{id}}"></label>
+														<input type="radio" id="star4{{id}}" name="rating{{id}}" value="4" /><label class = "full" for="star4{{id}}"></label>
+														<input type="radio" id="star3half{{id}}" name="rating{{id}}" value="3.5" /><label class="half" for="star3half{{id}}"></label>
+														<input type="radio" id="star3{{id}}" name="rating{{id}}" value="3" /><label class = "full" for="star3{{id}}"></label>
+														<input type="radio" id="star2half{{id}}" name="rating{{id}}" value="2.5" /><label class="half" for="star2half{{id}}"></label>
+														<input type="radio" id="star2{{id}}" name="rating{{id}}" value="2" /><label class = "full" for="star2{{id}}"></label>
+														<input type="radio" id="star1half{{id}}" name="rating{{id}}" value="1.5" /><label class="half" for="star1half{{id}}"></label>
+														<input type="radio" id="star1{{id}}" name="rating{{id}}" value="1" /><label class = "full" for="star1{{id}}"></label>
+														<input type="radio" id="starhalf{{id}}" name="rating{{id}}" value="0.5" /><label class="half" for="starhalf{{id}}"></label>
+													</fieldset>
+												</div>
+												<script>
+													$('div[id=menuRating{{id}}]').hide()
+													$('input[name=rating{{id}}]:checked').prop('checked', false)
+													function open_rate(id) {
+														if($('div[id=menuRating' + id + ']').attr('opened-rate') === "hide") {
+															$('div[id=menuRating' + id + ']').attr('opened-rate', 'show')
+															$('div[id=menuRating' + id + ']').show()
+															$('div[id=menuRating' + id + ']').css({"position": "absolute", "margin": "0", "padding": "0", "top": ($('button[request-rate=' + id + ']').offset().top + $('button[request-rate=' + id + ']').offset().height), "left": $('button[request-rate=' + id + ']').offset().left, "border": "1px solid black", "background-color": "rgba(255, 255, 255, 1)"})
+														} else {
+															$('div[id=menuRating' + id + ']').attr('opened-rate', 'hide')
+															$('div[id=menuRating' + id + ']').hide()
 														}
-													</script>
+													}
+													$('input[name=rating{{id}}]').on('click', function() {
+														if(confirm('Are you sure to rate ' + $(this).val() + '?')) {
+															location.href="./{{faqId}}/{{id}}?rate=" + $(this).val()
+														}
+													})
+												</script>
+											{{/if}}
+											{{#if_eq sessionid questionAuthor}}
+												{{#if_eq solved 0}}
+													{{#if_eq flagged 0}}
+														<button request-id="{{id}}" opened-menu="hide" onclick="openMenu({{id}});">Flag</button>
+														<ul parent-id="{{id}}" class="flagMenu">
+															<li request="1">Flag as <font color="green"><strong>Solved</strong></font></li>
+															<li request="2">Flag as <font color="red"><strong>Inappropriate</strong></font></li>
+														</ul>
+														<script>
+															$('.flagMenu').hide();
+															function openMenu(id) {
+																if($('button[request-id='+id+']').attr('opened-menu') === 'hide') {
+																	$('button[request-id='+id+']').attr('opened-menu', 'opened')
+																	$('ul[parent-id='+id+']').show()
+																	$('.flagMenu').css({"list-style-type": "none",
+																						"position": "absolute",
+																						"margin": "0",
+																						"padding": "0",
+																						"top": ($('button[request-id=' + id + ']').offset().top + $('button[request-id=' + id + ']').offset().height),
+																						"left": $('button[request-id=' + id + ']').offset().left, "border": "1px solid black"
+																						})
+																	$('.flagMenu').children().css({"text-align": "left",
+																									"background-color": "white",
+																									"padding": "5px",
+																									"border-bottom":"1px solid black",
+																									"cursor": "pointer"
+																									})
+																	$('.flagMenu').children().on("click", function() {
+																		location.href="./{{faqId}}/" + id + "/" + $(this).attr("request")
+																	})
+																} else {
+																	$('button[request-id='+id+']').attr('opened-menu', 'hide')
+																	$('ul[parent-id='+id+']').hide()
+																}
+															}
+														</script>
+													{{/if_eq}}
 												{{/if_eq}}
 											{{/if_eq}}
-										{{/if_eq}}
 										</td>
 									</tr>
 									<tr>
