@@ -84,3 +84,32 @@ body {
   padding: 10px 10px;
   cursor: pointer;
 }
+.detailQuestion > .footer {
+  border-top: 1px solid black;
+  text-align: left;
+}
+.detailQuestion > .footer > .answer {
+  display: table;
+  width: 100%;
+}
+.detailQuestion > .footer > .answer > .answerForm {
+  display: table-row;
+}
+.detailQuestion > .footer > .answer > .answerForm > .answerInput {
+  display: table-cell;
+  width: 85%;
+  height: 100px;
+  vertical-align: top;
+}
+.detailQuestion > .footer > .answer > .answerForm > .answerInput > div {
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  text-align: left;
+  overflow-y: scroll;
+}
+.detailQuestion > .footer > .answer > .answerForm > .answerButton {
+  display: table-cell;
+  width: 100%;
+  height: 100px;
+}
