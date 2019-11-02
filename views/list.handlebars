@@ -34,11 +34,11 @@
 					{{#each list as |value key|}}
 						<div class="listEach">
 							{{#with this}}
-								<div class="listEachCell">{{id}}</div>
-								<div class="listEachCell">{{author}}</div>
-								<div class="listEachCell">{{title}}</div>
-								<div class="listEachCell">{{createDate}}</div>
-								<div request-solved="status" class="listEachCell">
+								<div onclick="location.href='./faq/{{id}}'" class="listEachCell">{{id}}</div>
+								<div onclick="location.href='./faq/{{id}}'" class="listEachCell">{{author}}</div>
+								<div onclick="location.href='./faq/{{id}}'" class="listEachCell">{{title}}</div>
+								<div onclick="location.href='./faq/{{id}}'" class="listEachCell">{{createDate}}</div>
+								<div onclick="location.href='./faq/{{id}}'" class="listEachCell">
 									{{#if_eq solved 0}}
 										<font color="red">Not yet</font>
 									{{else}}
