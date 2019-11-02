@@ -3,6 +3,7 @@
 
 // Question Services
 var QuestionListService = require('../services/QuestionServices/QuestionListService')
+var NewQuestionService = require('../services/QuestionServices/NewQuestionService')
 
 module.exports = {
     questionList: async ctx => {
@@ -29,6 +30,25 @@ module.exports = {
                 checkLoggedin = true
             }
             await ctx.render('writeQuestion', {check: checkLoggedin})
+        } catch(err) {
+            console.log(err)
+            await ctx.render('error', {message: err.message})
+        }
+    },
+    newQuestion: async ctx => {
+        try {
+            const body = ctx.request.body
+            var {path, type, size} = ctx.request.files.image
+            if(size !== 0) {
+                body.imageBool = 1
+                body.imageType = type
+            } else {
+                body.imageBool = 0
+                body.imageType = ""
+            }
+            body.author = ctx.session.userid
+            await NewQuestionService.newQuestion(body)
+            ctx.redirect(`/list`)
         } catch(err) {
             console.log(err)
             await ctx.render('error', {message: err.message})

@@ -9,4 +9,5 @@ var FAQController = require('../controllers/FAQController')
 
 router.get('/list', FAQController.questionList)
 router.get('/writeQuestion', FAQController.newQuestionForm)
+router.post('/writeQuestion', koaBody, FAQController.newQuestion)
 module.exports = router

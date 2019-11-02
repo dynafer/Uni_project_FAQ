@@ -30,4 +30,18 @@ module.exports = class FAQ {
 			throw err
 		}
     }
+
+	async newQuestion(query) {
+		try {
+			if(query.imageType !== undefined) {
+				query.imageType = mime.extension(query.imageType);
+			}
+            const sql = `INSERT INTO questions(title, description, authorId, imageBool, imageType) VALUES("${query.title}", "${query.description}", ${query.author}, ${query.imageBool}, "${query.imageType}")`
+			await this.db.run(sql)
+			return true
+		} catch(err) {
+			console.log(err)
+			throw err
+		}
+	}
 }
