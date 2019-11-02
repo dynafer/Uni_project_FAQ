@@ -3,6 +3,7 @@
 
 var LoginService = require('../services/UserServices/LoginService')
 var RegisterService = require('../services/UserServices/RegisterService')
+var UploadAvatarService = require('../services/UserServices/UploadAvatarService')
 
 module.exports = {
     home: async ctx => {
@@ -43,7 +44,11 @@ module.exports = {
         try {
             // extract the data from the request
             const body = ctx.request.body
-            await RegisterService.register(body)
+            const {path, type, size} = ctx.request.files.avatar
+            const checkTrue = await RegisterService.register(body)
+            if(checkTrue === true && size !== 0) {
+                await UploadAvatarService.uploadAvatar({user: body.user, path: path, type: type})
+            }
             // redirect to the home page
             ctx.redirect(`/`)
         } catch(err) {
