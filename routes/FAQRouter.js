@@ -12,5 +12,6 @@ router.get('/writeQuestion', FAQController.newQuestionForm)
 router.post('/writeQuestion', koaBody, FAQController.newQuestion)
 router.get('/faq/:id([0-9]{1,})', FAQController.detailsQuestion)
 router.get('/FullImage/:id([0-9]{1,})', FAQController.fullImage)
+router.post('/faq/:id([0-9]{1,})', koaBody, FAQController.newAnswer)
 
 module.exports = router

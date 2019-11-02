@@ -15,6 +15,8 @@ module.exports = class FAQ {
 			await this.db.run(question)
 			const thumbnail = 'CREATE TABLE IF NOT EXISTS questionThumbnails (id INTEGER PRIMARY KEY AUTOINCREMENT, faqId INTEGER(100), encoded TEXT);'
 			await this.db.run(thumbnail)
+			const answer = 'CREATE TABLE IF NOT EXISTS answers (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT, flagged INTEGER(2) DEFAULT 0, faqId INTEGER(100), authorId INTEGER(100), createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP);'
+			await this.db.run(answer)
 			return this
 		})()
 	}
@@ -76,5 +78,33 @@ module.exports = class FAQ {
         } catch (err) {
             throw err
         }
+    }
+
+	async getAnswers(query) {
+		try {
+            var sql, records
+            if(query.id === undefined) {
+                sql = `SELECT * FROM answers WHERE faqId = ? ORDER BY id ASC`
+                records = await this.db.all(sql, query.faqId)
+            } else {
+                sql = `SELECT * FROM answers WHERE id = ? ORDER BY id DESC`
+                records = await this.db.all(sql, query.id)
+            }
+			if(records === undefined || records.length === 0) return {nolist: true};
+			return records;
+		} catch(err) {
+			throw err
+		}
+    }
+
+	async newAnswer(query) {
+		try {
+            const sql = `INSERT INTO answers(description, faqId, authorId) VALUES("${query.description}", ${query.faqId}, ${query.author})`
+			await this.db.run(sql)
+			return true
+		} catch(err) {
+			console.log(err)
+			throw err
+		}
     }
 }
