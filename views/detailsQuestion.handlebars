@@ -73,8 +73,8 @@
 												{{#if_eq flagged 0}}
 													<button request-id="{{id}}" opened-menu="hide" onclick="openMenu({{id}});">Flag</button>
 													<ul parent-id="{{id}}" class="flagMenu">
-														<li request="1">Flag as <strong>Solved</strong></li>
-														<li request="2">Flag as <strong>Inappropriate</strong></li>
+														<li request="1">Flag as <font color="green"><strong>Solved</strong></font></li>
+														<li request="2">Flag as <font color="red"><strong>Inappropriate</strong></font></li>
 													</ul>
 													<script>
 														$('.flagMenu').hide();
@@ -82,8 +82,19 @@
 															if($('button[request-id='+id+']').attr('opened-menu') === 'hide') {
 																$('button[request-id='+id+']').attr('opened-menu', 'opened')
 																$('ul[parent-id='+id+']').show()
-																$('.flagMenu').css({"list-style-type": "none", "position": "absolute", "margin": "0", "padding": "0", "top": ($('button[request-id=' + id + ']').offset().top + $('button[request-id=' + id + ']').offset().height), "left": $('button[request-id=' + id + ']').offset().left, "border": "1px solid black"})
-																$('.flagMenu').children().css({"text-align": "left", "background-color": "white", "padding": "5px", "border-bottom": "1px solid black", "cursor": "pointer"})
+																$('.flagMenu').css({"list-style-type": "none",
+																					"position": "absolute",
+																					"margin": "0",
+																					"padding": "0",
+																					"top": ($('button[request-id=' + id + ']').offset().top + $('button[request-id=' + id + ']').offset().height),
+																					"left": $('button[request-id=' + id + ']').offset().left, "border": "1px solid black"
+																					})
+																$('.flagMenu').children().css({"text-align": "left",
+																								"background-color": "white",
+																								"padding": "5px",
+																								"border-bottom":"1px solid black",
+																								"cursor": "pointer"
+																								})
 																$('.flagMenu').children().on("click", function() {
 																	location.href="./{{faqId}}/" + id + "/" + $(this).attr("request")
 																})
