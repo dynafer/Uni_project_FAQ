@@ -8,40 +8,84 @@
 		<meta name="description" content="Detail of a selected question page">
 		<meta name="author" content="Haseong Kim">
 		<link href="../style.css" type="text/css" rel="stylesheet" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	</head>
 	<body>
 		<center>
-		<h1>Frequently Asked Questions</h1>
-		{{#if check}}
-		<p><a href="/logout">Log out</a></p>
-		{{else}}
-		<p><a href="/login">Log in</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/register">Register</a></p>
-		{{/if}}
-		<p><a href="/list">List</a>{{#if check}}&nbsp;&nbsp;&nbsp;&nbsp;<a href="/writeQuestion">Ask</a>{{/if}}</p>
+			<h1>Frequently Asked Questions</h1>
+			{{#if check}}
+			<p><a href="/logout">Log out</a></p>
+			{{else}}
+			<p><a href="/login">Log in</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/register">Register</a></p>
+			{{/if}}
+			<p><a href="/list">List</a>{{#if check}}&nbsp;&nbsp;&nbsp;&nbsp;<a href="/writeQuestion">Ask</a>{{/if}}</p>
 
-        <div class="detailQuestion">
-			{{#with getInfo}}
-				<div class="title">
-					<div class="solved">
-						{{#if_eq solved 0}}
-							[Ongoing]
-						{{else}}
-							[Solved]
-						{{/if_eq}} 
-						{{title}}
+			<div class="detailQuestion">
+				{{#with getInfo}}
+					<div class="title">
+						<div class="solved">
+							{{#if_eq solved 0}}
+								[Ongoing]
+							{{else}}
+								[Solved]
+							{{/if_eq}} 
+							{{title}}
+						</div>
 					</div>
-				</div>
-				<div class="author">
-					Author <span class="author_name">{{author}}</span> <span class="date">({{createDate}})</span>
-				</div>
-				<div class="description">{{{description}}}</div>
-				{{#if_eq imageBool 1}}
-					<div id="image" class="image">
-						<img onclick="window.open('../FullImage/{{id}}?type={{imageType}}');" class="thumbnail" src="{{imageData}}">
+					<div class="author">
+						Author <span class="author_name">{{author}}</span> <span class="date">({{createDate}})</span>
 					</div>
-				{{/if_eq}}
-			{{/with}}
-        </div>
+					<div class="description">{{{description}}}</div>
+					{{#if_eq imageBool 1}}
+						<div id="image" class="image">
+							<img onclick="window.open('../FullImage/{{id}}?type={{imageType}}');" class="thumbnail" src="{{imageData}}">
+						</div>
+					{{/if_eq}}
+				{{/with}}
+				<div class="answerList">
+					{{#if noAnswer}}
+					<table cellspacing="0" cellpadding="0">
+						<tr>
+							<td><h3>No Answers found</h3></td>
+						</tr>
+					</table>
+					{{else}}
+						{{#each getAnswers as |value key|}}
+							{{#with this}}
+								<table cellspacing="0" cellpadding="0">
+									<tr>
+										<td rowspan="2" width="60px"><img width="50px" height="50px" src="../avatars/{{author}}.png" onerror="this.src='../avatars/avatar.png';"></td>
+										<td><strong>{{author}}</strong></td>
+									</tr>
+									<tr>
+										<td>
+											Answered {{createDate}}
+										</td>
+									</tr>
+									<tr>
+										<td id="answer_description"colspan="2">{{{description}}}</td>
+									</tr>
+								</table>
+							{{/with}}
+						{{/each}}
+					{{/if}}
+				</div>
+				{{#if check}}
+					{{#if_eq getInfo.solved 0}}
+						<div class="footer">
+							<form class="answer" enctype="multipart/form-data" method="post">
+								<div class="answerForm">
+									<textarea style="display: none;" name="answerInput"></textarea>
+									<div class="answerInput">
+										<div onkeydown="$('textarea[name=answerInput]').val($(this).html())" onkeypress="$('textarea[name=answerInput]').val($(this).html())" onkeyup="$('textarea[name=answerInput]').val($(this).html())" contenteditable="true"></div>
+									</div>
+									<button class="answerButton">Answer</button>
+								</div>
+							</form>
+						</div>
+					{{/if_eq}}
+				{{/if}}
+			</div>
 		</center>
 	</body>
 </html>

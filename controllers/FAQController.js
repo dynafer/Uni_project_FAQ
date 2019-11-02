@@ -9,6 +9,10 @@ var NewQuestionService = require('../services/QuestionServices/NewQuestionServic
 var UploadPictureService = require('../services/QuestionServices/UploadPictureService')
 var DetailQuestionService = require('../services/QuestionServices/DetailQuestionService')
 
+// Answer Services
+var AnswerListService = require('../services/AnswerServices/AnswerListService')
+var NewAnswerService = require('../services/AnswerServices/NewAnswerService')
+
 module.exports = {
     questionList: async ctx => {
         try {
@@ -72,7 +76,12 @@ module.exports = {
             }
             const detail = await DetailQuestionService.detailsQuestion({faqId: parseInt(ctx.params.id)})
             if(detail.nolist === undefined) {
+                const answerList = await AnswerListService.getAnswers({faqId: parseInt(ctx.params.id), sessionid: ctx.session.userid})
                 var options = {check: checkLoggedin, sessionid: ctx.session.userid, getInfo: detail}
+                if(answerList.nolist !== undefined) {
+                    options.noAnswer = answerList
+                }
+                options.getAnswers = answerList
             } else {
                 throw Error("No FAQ found")
             }
@@ -88,6 +97,15 @@ module.exports = {
             readImage.getBase64(jimp.AUTO , function(e, img64){ encodedData = img64 })
             await ctx.render('viewFullImage', {encoded: encodedData})
         } catch (err) {
+            await ctx.render('error', {message: err.message})
+        }
+    },
+    newAnswer: async ctx => {
+        try {
+            const body = ctx.request.body
+            await NewAnswerService.newAnswer({faqId: parseInt(ctx.params.id), description: body.answerInput, author: ctx.session.userid})
+            ctx.redirect('/faq/' + ctx.params.id)
+        } catch(err) {
             await ctx.render('error', {message: err.message})
         }
     }
