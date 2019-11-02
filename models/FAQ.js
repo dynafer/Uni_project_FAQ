@@ -80,6 +80,23 @@ module.exports = class FAQ {
         }
     }
 
+	async getAnswers(query) {
+		try {
+            var sql, records
+            if(query.id === undefined) {
+                sql = `SELECT * FROM answers WHERE faqId = ? ORDER BY id ASC`
+                records = await this.db.all(sql, query.faqId)
+            } else {
+                sql = `SELECT * FROM answers WHERE id = ? ORDER BY id DESC`
+                records = await this.db.all(sql, query.id)
+            }
+			if(records === undefined || records.length === 0) return {nolist: true};
+			return records;
+		} catch(err) {
+			throw err
+		}
+    }
+
 	async newAnswer(query) {
 		try {
             const sql = `INSERT INTO answers(description, faqId, authorId) VALUES("${query.description}", ${query.faqId}, ${query.author})`

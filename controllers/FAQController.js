@@ -10,6 +10,7 @@ var UploadPictureService = require('../services/QuestionServices/UploadPictureSe
 var DetailQuestionService = require('../services/QuestionServices/DetailQuestionService')
 
 // Answer Services
+var AnswerListService = require('../services/AnswerServices/AnswerListService')
 var NewAnswerService = require('../services/AnswerServices/NewAnswerService')
 
 module.exports = {
@@ -75,7 +76,12 @@ module.exports = {
             }
             const detail = await DetailQuestionService.detailsQuestion({faqId: parseInt(ctx.params.id)})
             if(detail.nolist === undefined) {
+                const answerList = await AnswerListService.getAnswers({faqId: parseInt(ctx.params.id), sessionid: ctx.session.userid})
                 var options = {check: checkLoggedin, sessionid: ctx.session.userid, getInfo: detail}
+                if(answerList.nolist !== undefined) {
+                    options.noAnswer = answerList
+                }
+                options.getAnswers = answerList
             } else {
                 throw Error("No FAQ found")
             }
