@@ -1,3 +1,6 @@
+
+'use strict'
+
 var faqModel = require('../../models/FAQ')
 
 exports.newAnswer = async function (query) {
