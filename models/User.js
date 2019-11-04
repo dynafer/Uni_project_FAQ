@@ -21,7 +21,7 @@ module.exports = class User {
 
     async getUsers(query) {
         var sql, records
-        if((query.username === undefined || query.username.length === 0) && (query.userid === undefined || query.userid === 0)) {
+        if((query.username === undefined || query.username.length === 0) && (query.userid === undefined || query.userid === 0) && query.contribution === undefined) {
 			sql = `SELECT * FROM users;`
 			records = await this.db.all(sql)
         } else {
@@ -30,6 +30,8 @@ module.exports = class User {
 				query_condition = `WHERE user="${query.username}"`
 			} else if(query.userid !== undefined && query.userid !== 0) {
 				query_condition = `WHERE id="${query.userid}"`
+			} else if(query.contribution === true) {
+				query_condition = `ORDER BY contribution DESC`
 			}
 			sql = `SELECT * FROM users ${query_condition};`
 			records = await this.db.all(sql)
