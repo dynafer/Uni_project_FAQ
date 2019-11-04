@@ -5,6 +5,7 @@ const jimp = require('jimp')
 
 // User Services
 var ContributeService = require('../services/UserServices/ContributeService')
+var ContributedRankingService = require('../services/UserServices/ContributedRankingService')
 
 // Question Services
 var QuestionListService = require('../services/QuestionServices/QuestionListService')
@@ -28,6 +29,9 @@ module.exports = {
                 checkLoggedin = true
             }
             const getList = await QuestionListService.getQuestions({})
+            for(var i = 0; i < getList.length; i ++) {
+                getList[i].rankedUser = await ContributedRankingService.rankedContribute({userid: getList[i].authorId})
+            }
             await ctx.render('list', {check: checkLoggedin, list: getList})
         } catch(err) {
             console.log(err)
@@ -80,8 +84,12 @@ module.exports = {
                 checkLoggedin = true
             }
             const detail = await DetailQuestionService.detailsQuestion({faqId: parseInt(ctx.params.id)})
+            detail.rankedUser = await ContributedRankingService.rankedContribute({userid: detail.authorId})
             if(detail.nolist === undefined) {
                 const answerList = await AnswerListService.getAnswers({faqId: parseInt(ctx.params.id), sessionid: ctx.session.userid})
+                for(var i = 0; i < answerList.length; i ++) {
+                    answerList[i].rankedUser = await ContributedRankingService.rankedContribute({userid: answerList[i].authorId})
+                }
                 var options = {check: checkLoggedin, sessionid: ctx.session.userid, getInfo: detail}
                 if(answerList.nolist !== undefined) {
                     options.noAnswer = answerList
