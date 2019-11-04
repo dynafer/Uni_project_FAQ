@@ -3,6 +3,9 @@
 
 const jimp = require('jimp')
 
+// User Services
+var ContributeService = require('../services/UserServices/ContributeService')
+
 // Question Services
 var QuestionListService = require('../services/QuestionServices/QuestionListService')
 var NewQuestionService = require('../services/QuestionServices/NewQuestionService')
@@ -116,6 +119,13 @@ module.exports = {
             await FlagAnswerService.flagAnswer({faqId: parseInt(ctx.params.id), sessionId: ctx.session.userid, answerId: parseInt(ctx.params.answerid), flagtype: parseInt(ctx.params.flagtype)})
             const getAnswer = await AnswerListService.getAnswers({id: parseInt(ctx.params.answerid)})
             if(getAnswer.nolist !== undefined) throw Error(`Error during contributing`)
+            var contribution = 0
+            if(parseInt(ctx.params.flagtype) === 1) {
+                contribution = 50
+            } else {
+                contribution = -5
+            }
+            await ContributeService.contribute({userId: getAnswer[0].authorId, contribution: contribution})
             ctx.redirect('/faq/' + ctx.params.id)
         } catch(err) {
             await ctx.render('error', {message: err.message})

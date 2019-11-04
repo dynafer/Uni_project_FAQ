@@ -65,4 +65,14 @@ module.exports = class User {
 			throw err
 		}
 	}
+	
+	async contribute(query) {
+		try {
+			const sql = `UPDATE users SET contribution = ${query.contribution} WHERE id = ${query.userId}`
+            await this.db.run(sql)
+			return true
+		} catch(err) {
+			throw err
+		}
+	}
 }
