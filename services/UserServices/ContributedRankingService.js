@@ -15,11 +15,23 @@ exports.rankedContribute = async function (query) {
         var silver = allUsers.length * 25 / 100
         var bronze = allUsers.length * 50 / 100
         var ranked = 0
+        var next_rank = 0
         for(var i = 0; i < allUsers.length; i ++) {
-            ranked = i + 1
             if(allUsers[i].id === getUser[0].id) {
                 break
             } else {
+                if(i !== 0) {
+                    if(allUsers[i-1].contribution === allUsers[i].contribution) {
+                        next_rank = next_rank + 1
+                    } else if(next_rank !== 0) {
+                        ranked = ranked + next_rank
+                        next_rank = 0
+                    } else {
+                        ranked = ranked + 1
+                    }
+                } else {
+                    next_rank = 1
+                }
                 continue
             }
         }
