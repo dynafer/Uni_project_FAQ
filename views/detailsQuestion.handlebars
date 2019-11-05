@@ -34,7 +34,7 @@
 						</div>
 					</div>
 					<div class="author">
-						Author <span class="author_name">{{author}}</span> <span class="date">({{createDate}})</span>
+						Author <span class="author_name"><span class="rankedStar {{rankedUser}}"></span> {{author}}</span> <span class="date">({{createDate}})</span>
 					</div>
 					<div class="description">{{{description}}}</div>
 					{{#if_eq imageBool 1}}
@@ -67,7 +67,7 @@
 									{{/if_eq}}
 									<tr>
 										<td rowspan="2" width="60px"><img width="50px" height="50px" src="../avatars/{{author}}.png" onerror="this.src='../avatars/avatar.png';"></td>
-										<td><strong>{{author}}</strong></td>
+										<td><span class="rankedStar {{rankedUser}}"></span> <strong>{{author}}</strong></td>
 										<td rowspan="2" align="right">
 											<span id="{{id}}" class="rated">
 												{{{averageRate}}}
