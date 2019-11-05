@@ -197,3 +197,19 @@ body {
   display: inline-block;
   content: "\f005";
 }
+
+.noStar {
+  color: #F6F6F6;
+}
+
+.bronzeStar {
+  color: #cd7f32;
+}
+
+.silverStar {
+  color: #C0C0C0;
+}
+
+.goldStar {
+  color: #d4af37;
+}
