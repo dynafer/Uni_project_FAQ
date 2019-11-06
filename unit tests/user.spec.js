@@ -60,8 +60,9 @@ describe('uploadAvatar()', () => {
 
 	test('upload a avatar with a valid username', async done => {
 		expect.assertions(1)
-		const uploaded = await UploadAvatarService.uploadAvatar({path:'public/avatars/avatar.png', type:'image/png', user:'doej'})
-		expect(uploaded).toBe()
+		await UploadAvatarService.uploadAvatar({path:'public/avatars/avatar.png', type:'image/png', user:'doej'})
+		var valid = fs.existsSync('public/avatars/doej.png')
+		expect(valid).toBe(true)
 		done()
 	})
 
@@ -180,4 +181,10 @@ describe('contributedranking()', () => {
 		done()
 	})
 
+})
+
+afterAll(async () => {
+    const sqlite = require('sqlite-async')
+    const db = await sqlite.open("website.db")
+    await db.run("DROP TABLE users;")
 })
