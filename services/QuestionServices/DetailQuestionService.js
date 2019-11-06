@@ -6,6 +6,7 @@ var faqModel = require('../../models/FAQ')
 
 exports.detailsQuestion = async function (query) {
     try {
+        if(query.faqId === 0 || query.faqId === null || query.faqId === undefined) throw Error(`Error during getting information of the question`)
         var FAQ = await new faqModel("website.db")
         var User = await new userModel("website.db")
         const details = await FAQ.getQuestions(query)
@@ -16,10 +17,11 @@ exports.detailsQuestion = async function (query) {
             }
             const getAuthorName = await User.getUsers({userid: details[0].authorId})
             details[0].author = getAuthorName[0].user
+        } else {
+            throw Error(`Can't find the question`)
         }
         return details[0]
     } catch (e) {
-        console.log(e)
         throw e
     }
 }

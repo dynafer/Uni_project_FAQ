@@ -1,75 +1,182 @@
 
 'use strict'
 
-const Accounts = require('../modules/user.js')
+const fs = require('fs')
+
+const RegisterService = require('../services/UserServices/RegisterService')
+const LoginService = require('../services/UserServices/LoginService')
+const UploadAvatarService = require('../services/UserServices/UploadAvatarService')
+const ContributeService = require('../services/UserServices/ContributeService')
+const ContributedRankingService = require('../services/UserServices/ContributedRankingService')
 
 describe('register()', () => {
 
 	test('register a valid account', async done => {
 		expect.assertions(1)
-		const account = await new Accounts()
-		const register = await account.register('doej', 'password')
+		const register = await RegisterService.register({user: 'doej', pass: 'password', pass2: 'password'})
 		expect(register).toBe(true)
 		done()
 	})
 
 	test('register a duplicate username', async done => {
 		expect.assertions(1)
-		const account = await new Accounts()
-		await account.register('doej', 'password')
-		await expect( account.register('doej', 'password') )
-			.rejects.toEqual( Error('username "doej" already in use') )
+		await RegisterService.register({user: 'doej1', pass: 'password', pass2: 'password'})
+		await expect( RegisterService.register({user: 'doej1', pass: 'password', pass2: 'password'}) )
+			.rejects.toEqual( Error('username "doej1" already in use') )
 		done()
 	})
 
 	test('error if blank username', async done => {
 		expect.assertions(1)
-		const account = await new Accounts()
-		await expect( account.register('', 'password') )
+		await expect( RegisterService.register({user: '', pass: 'password', pass2: 'password'}) )
 			.rejects.toEqual( Error('missing username') )
 		done()
 	})
 
 	test('error if blank password', async done => {
 		expect.assertions(1)
-		const account = await new Accounts()
-		await expect( account.register('doej', '') )
+		await expect( RegisterService.register({user: 'doej', pass: '', pass2: 'password'}) )
 			.rejects.toEqual( Error('missing password') )
+		done()
+	})
+
+	test('error if blank confirm password', async done => {
+		expect.assertions(1)
+		await expect( RegisterService.register({user: 'doej', pass: 'password', pass2: ''}) )
+			.rejects.toEqual( Error('missing confirm password') )
+		done()
+	})
+
+	test('error if password and confirm password are incorrect', async done => {
+		expect.assertions(1)
+		await expect( RegisterService.register({user: 'doej', pass: 'password1', pass2: 'password2'}) )
+			.rejects.toEqual( Error('confirm password are incorrect') )
 		done()
 	})
 
 })
 
-describe('uploadPicture()', () => {
-	// this would have to be done by mocking the file system
-	// perhaps using mock-fs?
+describe('uploadAvatar()', () => {
+
+	test('upload a avatar with a valid username', async done => {
+		expect.assertions(1)
+		const uploaded = await UploadAvatarService.uploadAvatar({path:'public/avatars/avatar.png', type:'image/png', user:'doej'})
+		expect(uploaded).toBe()
+		done()
+	})
+
+	test('Error if upload a avatar without username', async done => {
+		expect.assertions(1)
+		await expect( UploadAvatarService.uploadAvatar({path:'public/avatars/avatar.png', type:'image/png', user:''}) )
+			.rejects.toEqual( Error('Error during uploading') )
+		done()
+	})
+
+	afterAll(async () => {
+		fs.unlinkSync('public/avatars/doej.png')
+	})
+
 })
 
 describe('login()', () => {
+	
 	test('log in with valid credentials', async done => {
-		expect.assertions(1)
-		const account = await new Accounts()
-		await account.register('doej', 'password')
-		const valid = await account.login('doej', 'password')
-		expect(valid).toBe(true)
+		expect.assertions(2)
+		const valid = await LoginService.login({user: 'doej', pass: 'password'})
+		expect(valid.authorised).toBe(true)
+		expect(valid.userid).toBe(1)
 		done()
 	})
 
 	test('invalid username', async done => {
 		expect.assertions(1)
-		const account = await new Accounts()
-		await account.register('doej', 'password')
-		await expect( account.login('roej', 'password') )
+		await expect( LoginService.login({user: 'roej', pass: 'password'}) )
 			.rejects.toEqual( Error('username "roej" not found') )
 		done()
 	})
 
 	test('invalid password', async done => {
 		expect.assertions(1)
-		const account = await new Accounts()
-		await account.register('doej', 'password')
-		await expect( account.login('doej', 'bad') )
+		await expect( LoginService.login({user: 'doej', pass: 'bad'}) )
 			.rejects.toEqual( Error('invalid password for account "doej"') )
+		done()
+	})
+
+})
+
+describe('contribute()', () => {
+
+	test('contribute with valid credentials', async done => {
+		expect.assertions(2)
+		const valid1 = await ContributeService.contribute({userId: 1, contribution: 50})
+		const valid2 = await ContributeService.contribute({userId: 1, contribution: -5})
+		expect(valid1).toBe(true)
+		expect(valid2).toBe(true)
+		done()
+	})
+
+	test('error if attempts without login', async done => {
+		expect.assertions(3)
+		await expect( ContributeService.contribute({userId: 0, contribution: -5}) )
+			.rejects.toEqual( Error(`You don't login yet`) )
+		await expect( ContributeService.contribute({userId: null, contribution: -5}) )
+			.rejects.toEqual( Error(`You don't login yet`) )
+		await expect( ContributeService.contribute({contribution: -5}) )
+			.rejects.toEqual( Error(`You don't login yet`) )
+		done()
+	})
+
+	test('error if the userid does not exist', async done => {
+		expect.assertions(1)
+		await expect( ContributeService.contribute({userId: 5123648231, contribution: -5}) )
+			.rejects.toEqual( Error(`Error during contributing`) )
+		done()
+	})
+
+})
+
+describe('contributedranking()', () => {
+
+	test('get a selected user contribution rank with valid credentials', async done => {
+		expect.assertions(5)
+		await RegisterService.register({user: 'doej2', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'doej3', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'doej4', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'doej5', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'doej6', pass: 'password', pass2: 'password'})
+		await ContributeService.contribute({userId: 1, contribution: 150})
+		await ContributeService.contribute({userId: 2, contribution: 130})
+		await ContributeService.contribute({userId: 3, contribution: 110})
+		await ContributeService.contribute({userId: 4, contribution: 100})
+		await ContributeService.contribute({userId: 5, contribution: 80})
+		const valid1 = await ContributedRankingService.rankedContribute({userid: 1})
+		const valid2 = await ContributedRankingService.rankedContribute({userid: 2})
+		const valid3 = await ContributedRankingService.rankedContribute({userid: 3})
+		const valid4 = await ContributedRankingService.rankedContribute({userid: 4})
+		const valid5 = await ContributedRankingService.rankedContribute({userid: 5})
+		expect(valid1).toBe("goldStar")
+		expect(valid2).toBe("silverStar")
+		expect(valid3).toBe("bronzeStar")
+		expect(valid4).toBe("bronzeStar")
+		expect(valid5).toBe("noStar")
+		done()
+	})
+
+	test('invalid user id', async done => {
+		expect.assertions(3)
+		await expect( ContributedRankingService.rankedContribute({userid: 0}) )
+			.rejects.toEqual( Error(`Error for assigning a user`) )
+		await expect( ContributedRankingService.rankedContribute({userid: null}) )
+			.rejects.toEqual( Error(`Error for assigning a user`) )
+		await expect( ContributedRankingService.rankedContribute({}) )
+			.rejects.toEqual( Error(`Error for assigning a user`) )
+		done()
+	})
+
+	test('error if the userid does not exist', async done => {
+		expect.assertions(1)
+		await expect( ContributedRankingService.rankedContribute({userid: 512361234512}) )
+			.rejects.toEqual( Error(`Error during getting information`) )
 		done()
 	})
 

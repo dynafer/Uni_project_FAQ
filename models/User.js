@@ -12,7 +12,6 @@ module.exports = class User {
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
-			// we need this table to store the user accounts
 			const sql = 'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, pass TEXT, contribution INTEGER(100));'
 			await this.db.run(sql)
 			return this
@@ -52,8 +51,6 @@ module.exports = class User {
 
 	async uploadPicture(files) {
 		const extension = mime.extension(files.type)
-		console.log(`path: ${files.path}`)
-		console.log(`extension: ${extension}`)
 		await fs.copy(files.path, `public/avatars/${files.user}.${extension}`)
 	}
     
