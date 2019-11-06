@@ -10,7 +10,6 @@ module.exports = class FAQ {
 	constructor(dbName = ':memory:') {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
-			// we need this table to store the user accounts
 			const question = 'CREATE TABLE IF NOT EXISTS questions (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, solved INTEGER(1) DEFAULT 0, authorId INTEGER(100), createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP, imageBool INTEGER(1), imageType TEXT);'
 			await this.db.run(question)
 			const thumbnail = 'CREATE TABLE IF NOT EXISTS questionThumbnails (id INTEGER PRIMARY KEY AUTOINCREMENT, faqId INTEGER(100), encoded TEXT);'
@@ -49,7 +48,6 @@ module.exports = class FAQ {
 			await this.db.run(sql)
 			return true
 		} catch(err) {
-			console.log(err)
 			throw err
 		}
 	}
@@ -57,8 +55,6 @@ module.exports = class FAQ {
 	async uploadPicture(query) {
 		try {
 			const extension = mime.extension(query.type)
-			console.log(`path: ${query.path}`)
-			console.log(`extension: ${extension}`)
 			await fs.copy(query.path, `public/upload/FAQ/${query.listid}.${extension}`)
 			var encodedData
 			const readImage = await jimp.read(`public/upload/FAQ/${query.listid}.${extension}`)
@@ -105,7 +101,6 @@ module.exports = class FAQ {
 			await this.db.run(sql)
 			return true
 		} catch(err) {
-			console.log(err)
 			throw err
 		}
     }
@@ -120,7 +115,6 @@ module.exports = class FAQ {
             }
 			return true
 		} catch(err) {
-			console.log(err)
 			throw err
 		}
     }
@@ -148,7 +142,6 @@ module.exports = class FAQ {
 			await this.db.run(sql)
 			return true
 		} catch(err) {
-			console.log(err)
 			throw err
 		}
 	}
