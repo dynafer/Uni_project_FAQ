@@ -19,12 +19,13 @@ describe('questionList()', () => {
     })
 
     test('get a list', async done => {
-        expect.assertions(2)
+        expect.assertions(3)
         await NewQuestionService.newQuestion({author: 1, title: "test", description: "test", imageBool: 0, imageType: ""})
         const list = await QuestionListService.getQuestions({})
 
         expect(list.nolist).toBe(undefined)
         expect(list[0].id).toBe(1)
+        expect(list[0].authorId).toBe(1)
         done()
     })
 
@@ -36,7 +37,7 @@ describe('questionList()', () => {
         done()
     })
 
-    test('no question found', async done => {
+    test('no specific question found', async done => {
         expect.assertions(1)
         await NewQuestionService.newQuestion({author: 1, title: "test2", description: "test2", imageBool: 0})
         const list = await QuestionListService.getQuestions({faqId: 0})
