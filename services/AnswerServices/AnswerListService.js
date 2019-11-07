@@ -15,6 +15,7 @@ exports.getAnswers = async function (query) {
 				list[i].author = getAuthorName[0].user
 				const getAnswerRate = await FAQ.getAnswerRates({answerId: list[i].id})
 				const getQuestion = await FAQ.getQuestions({faqId: query.faqId})
+				if(getQuestion.nolist !== undefined) throw Error(`The question doesn't exist`)
 				var average_rate = 0.0
 				if(getAnswerRate.nolist === undefined) {
 					for(var l=0; l<getAnswerRate.length; l++) {

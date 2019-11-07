@@ -21,8 +21,7 @@ module.exports = class User {
     async getUsers(query) {
         var sql, records
         if((query.username === undefined || query.username.length === 0) && (query.userid === undefined || query.userid === 0) && query.contribution === undefined) {
-			sql = `SELECT * FROM users;`
-			records = await this.db.all(sql)
+			throw Error("Parameter Error")
         } else {
 			var query_condition
 			if(query.username !== undefined && query.username.length !== 0) {
