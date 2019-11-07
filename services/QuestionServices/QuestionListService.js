@@ -17,7 +17,6 @@ exports.getQuestions = async function (query) {
         }
         return lists;
     } catch (e) {
-        // Log Errors
         throw e
     }
 }

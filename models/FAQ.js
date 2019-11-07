@@ -53,19 +53,15 @@ module.exports = class FAQ {
 	}
 
 	async uploadPicture(query) {
-		try {
-			const extension = mime.extension(query.type)
-			await fs.copy(query.path, `public/upload/FAQ/${query.listid}.${extension}`)
-			var encodedData
-			const readImage = await jimp.read(`public/upload/FAQ/${query.listid}.${extension}`)
-			await readImage.resize(300, 300)
-			await readImage.quality(90)
-			readImage.getBase64(jimp.AUTO , function(e, img64){ encodedData = img64 })
-			const sql = `INSERT INTO questionThumbnails(faqId, encoded) VALUES(${query.listid}, '${encodedData}')`
-			await this.db.run(sql)
-		} catch (err) {
-			throw err
-		}
+		const extension = mime.extension(query.type)
+		await fs.copy(query.path, `public/upload/FAQ/${query.listid}.${extension}`)
+		var encodedData
+		const readImage = await jimp.read(`public/upload/FAQ/${query.listid}.${extension}`)
+		await readImage.resize(300, 300)
+		await readImage.quality(90)
+		readImage.getBase64(jimp.AUTO , function(e, img64){ encodedData = img64 })
+		const sql = `INSERT INTO questionThumbnails(faqId, encoded) VALUES(${query.listid}, '${encodedData}')`
+		await this.db.run(sql)
     }
     
     async QuestionThumbnail(query) {

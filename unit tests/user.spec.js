@@ -110,7 +110,7 @@ describe('contribute()', () => {
 	test('contribute with valid credentials', async done => {
 		expect.assertions(2)
 		const valid1 = await ContributeService.contribute({userId: 1, contribution: 50})
-		const valid2 = await ContributeService.contribute({userId: 1, contribution: -5})
+		const valid2 = await ContributeService.contribute({userId: 2, contribution: -5})
 		expect(valid1).toBe(true)
 		expect(valid2).toBe(true)
 		done()
@@ -139,7 +139,7 @@ describe('contribute()', () => {
 describe('contributedranking()', () => {
 
 	test('get a selected user contribution rank with valid credentials', async done => {
-		expect.assertions(5)
+		expect.assertions(7)
 		await RegisterService.register({user: 'doej2', pass: 'password', pass2: 'password'})
 		await RegisterService.register({user: 'doej3', pass: 'password', pass2: 'password'})
 		await RegisterService.register({user: 'doej4', pass: 'password', pass2: 'password'})
@@ -148,18 +148,23 @@ describe('contributedranking()', () => {
 		await ContributeService.contribute({userId: 1, contribution: 150})
 		await ContributeService.contribute({userId: 2, contribution: 130})
 		await ContributeService.contribute({userId: 3, contribution: 110})
-		await ContributeService.contribute({userId: 4, contribution: 100})
+		await ContributeService.contribute({userId: 4, contribution: 110})
 		await ContributeService.contribute({userId: 5, contribution: 80})
+		await ContributeService.contribute({userId: 6, contribution: 20})
 		const valid1 = await ContributedRankingService.rankedContribute({userid: 1})
 		const valid2 = await ContributedRankingService.rankedContribute({userid: 2})
 		const valid3 = await ContributedRankingService.rankedContribute({userid: 3})
 		const valid4 = await ContributedRankingService.rankedContribute({userid: 4})
 		const valid5 = await ContributedRankingService.rankedContribute({userid: 5})
+		const valid6 = await ContributedRankingService.rankedContribute({userid: 6})
+		const valid7 = await ContributedRankingService.rankedContribute({userid: 7})
 		expect(valid1).toBe("goldStar")
 		expect(valid2).toBe("silverStar")
 		expect(valid3).toBe("bronzeStar")
 		expect(valid4).toBe("bronzeStar")
-		expect(valid5).toBe("noStar")
+		expect(valid5).toBe("bronzeStar")
+		expect(valid6).toBe("noStar")
+		expect(valid7).toBe("noStar")
 		done()
 	})
 
