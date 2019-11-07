@@ -2,6 +2,7 @@
 'use strict'
 
 const fs = require('fs')
+const sqlite = require('sqlite-async')
 
 // User Services
 const RegisterService = require('../services/UserServices/RegisterService')
@@ -32,6 +33,14 @@ beforeAll(async () => {
 })
 
 describe('questionList()', () => {
+
+    afterAll(async () => {
+        const db = await sqlite.open("website.db")
+        await db.run("DROP TABLE questions;")
+        await db.run("DROP TABLE questionThumbnails;")
+        await db.run("DROP TABLE answers;")
+        await db.run("DROP TABLE answersRate;")
+    })
 
 	test('get an empty list', async done => {
 		expect.assertions(1)
@@ -72,6 +81,14 @@ describe('questionList()', () => {
 })
 
 describe('newQuestion()', () => {
+
+    afterAll(async () => {
+        const db = await sqlite.open("website.db")
+        await db.run("DROP TABLE questions;")
+        await db.run("DROP TABLE questionThumbnails;")
+        await db.run("DROP TABLE answers;")
+        await db.run("DROP TABLE answersRate;")
+    })
 
 	test('Add a new question with valid credentials', async done => {
 		expect.assertions(1)
@@ -138,6 +155,14 @@ describe('uploadPicture()', () => {
 
 describe('detailQuestion()', () => {
 
+    afterAll(async () => {
+        const db = await sqlite.open("website.db")
+        await db.run("DROP TABLE questions;")
+        await db.run("DROP TABLE questionThumbnails;")
+        await db.run("DROP TABLE answers;")
+        await db.run("DROP TABLE answersRate;")
+    })
+
 	test('get a question detail with valid credentials', async done => {
 		expect.assertions(3)
         await NewQuestionService.newQuestion({author: 1, title: "test", description: "test", imageBool: 0})
@@ -145,6 +170,21 @@ describe('detailQuestion()', () => {
 		expect(detail.id).toBe(1)
 		expect(detail.title).toBe("test")
 		expect(detail.description).toBe("test")
+		done()
+    })
+
+    test('get a question detail with image data', async done => {
+        expect.assertions(4)
+        await NewQuestionService.newQuestion({author: 1, title: "test", description: "test", imageBool: 1, imageType: "png"})
+        await UploadPictureService.uploadPicture({path:'public/avatars/avatar.png', type:'image/png', listid: 2})
+        fs.unlinkSync('public/upload/FAQ/2.png')
+        fs.rmdirSync('public/upload/FAQ')
+        fs.rmdirSync('public/upload')
+        const detail = await DetailQuestionService.detailsQuestion({faqId: 2})
+        expect(detail.id).toBe(2)
+		expect(detail.title).toBe("test")
+		expect(detail.description).toBe("test")
+		expect(detail.imageBool).toBe(1)
 		done()
     })
     
@@ -179,13 +219,9 @@ describe('answerList()', () => {
     beforeAll(async () => {
         await NewQuestionService.newQuestion({author: 1, title: "test", description: "test", imageBool: 0})
         await NewQuestionService.newQuestion({author: 2, title: "test", description: "test", imageBool: 0})
-        await NewQuestionService.newQuestion({author: 3, title: "test", description: "test", imageBool: 0})
-        await NewQuestionService.newQuestion({author: 4, title: "test", description: "test", imageBool: 0})
-        await NewQuestionService.newQuestion({author: 5, title: "test", description: "test", imageBool: 0})
     })
 
     afterAll(async () => {
-        const sqlite = require('sqlite-async')
         const db = await sqlite.open("website.db")
         await db.run("DROP TABLE questions;")
         await db.run("DROP TABLE questionThumbnails;")
@@ -201,20 +237,51 @@ describe('answerList()', () => {
     })
 
     test('get a list', async done => {
-        expect.assertions(2)
+        expect.assertions(3)
         await NewAnswerService.newAnswer({author: 1, faqId: 1, description: "test"})
         const list = await AnswerListService.getAnswers({faqId: 1})
         expect(list.nolist).toBe(undefined)
         expect(list[0].id).toBe(1)
+        expect(list[0].sessionid).toBe(undefined)
+        done()
+    })
+
+    test('get a list after authentication', async done => {
+        expect.assertions(3)
+        const list = await AnswerListService.getAnswers({faqId: 1, sessionid: 1})
+        expect(list.nolist).toBe(undefined)
+        expect(list[0].id).toBe(1)
+        expect(list[0].sessionid).toBe(1)
+        done()
+    })
+
+    test('get a list with average rating', async done => {
+        expect.assertions(4)
+        await RateAnswerService.rateAnswer({sessionId: 2, answerId: 1, rate: 2.5})
+        const list = await AnswerListService.getAnswers({faqId: 1, sessionid: 1})
+        expect(list.nolist).toBe(undefined)
+        expect(list[0].id).toBe(1)
+        expect(list[0].sessionid).toBe(1)
+        expect(list[0].averageRate).toBe(`<span class="full checked"></span><span class="full checked"></span><span class="half checked"></span><span class="full"></span><span class="full"></span><span class="full"></span>`)
+        done()
+    })
+
+    test('get a list with average rating', async done => {
+        expect.assertions(1)
+        await NewAnswerService.newAnswer({author: 1, faqId: 2, description: "test"})
+        const db = await sqlite.open("website.db")
+        db.run(`DELETE FROM questions WHERE id = 2`)
+		await expect( AnswerListService.getAnswers({faqId: 2}) )
+			.rejects.toEqual( Error(`The question doesn't exist`) )
         done()
     })
 
     test('get a specific answer with the answer id', async done => {
         expect.assertions(3)
         await NewAnswerService.newAnswer({author: 5, faqId: 1, description: "test"})
-        const list = await AnswerListService.getAnswers({id: 2})
+        const list = await AnswerListService.getAnswers({id: 3})
         expect(list.nolist).toBe(undefined)
-        expect(list[0].id).toBe(2)
+        expect(list[0].id).toBe(3)
         expect(list[0].authorId).toBe(5)
         done()
     })
@@ -233,14 +300,9 @@ describe('newAnswer()', () => {
 
     beforeAll(async () => {
         await NewQuestionService.newQuestion({author: 1, title: "test", description: "test", imageBool: 0})
-        await NewQuestionService.newQuestion({author: 2, title: "test", description: "test", imageBool: 0})
-        await NewQuestionService.newQuestion({author: 3, title: "test", description: "test", imageBool: 0})
-        await NewQuestionService.newQuestion({author: 4, title: "test", description: "test", imageBool: 0})
-        await NewQuestionService.newQuestion({author: 5, title: "test", description: "test", imageBool: 0})
     })
 
     afterAll(async () => {
-        const sqlite = require('sqlite-async')
         const db = await sqlite.open("website.db")
         await db.run("DROP TABLE questions;")
         await db.run("DROP TABLE questionThumbnails;")
@@ -293,6 +355,13 @@ describe('newAnswer()', () => {
         done()
     })
 
+    test('error if the question does not exist', async done => {
+        expect.assertions(1)
+		await expect( NewAnswerService.newAnswer({author: 3, faqId: 5172934, description: "test"}) )
+			.rejects.toEqual( Error(`No Question found`) )
+        done()
+    })
+
 })
 
 describe('flagAnswer()', () => {
@@ -315,7 +384,6 @@ describe('flagAnswer()', () => {
     })
 
     afterAll(async () => {
-        const sqlite = require('sqlite-async')
         const db = await sqlite.open("website.db")
         await db.run("DROP TABLE questions;")
         await db.run("DROP TABLE questionThumbnails;")
@@ -406,6 +474,13 @@ describe('flagAnswer()', () => {
         expect.assertions(1)
 		await expect( FlagAnswerService.flagAnswer({faqId: 5, sessionId: 5, answerId: 6, flagtype: 1}) )
 			.rejects.toEqual( Error(`Access in a wrong way`) )
+        done()
+    })
+
+    test('error if the anser does not exist', async done => {
+        expect.assertions(1)
+		await expect( FlagAnswerService.flagAnswer({faqId: 5, sessionId: 5, answerId: 57213571, flagtype: 1}) )
+			.rejects.toEqual( Error(`No Answer found`) )
         done()
     })
 
@@ -505,7 +580,6 @@ describe('rateAnswer()', () => {
 })
 
 afterAll(async () => {
-    const sqlite = require('sqlite-async')
     const db = await sqlite.open("website.db")
     await db.run("DROP TABLE users;")
     await db.run("DROP TABLE questions;")

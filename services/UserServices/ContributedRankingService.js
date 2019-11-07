@@ -11,7 +11,6 @@ exports.rankedContribute = async function (query) {
         if(getUser.length === 0) throw Error(`Error during getting information`)
         if(getUser[0].contribution === 0) return "noStar"
         const allUsers = await User.getUsers({contribution: true})
-        if(allUsers.length === 0) throw Error(`No users found`)
         var gold = allUsers.length * 5 / 100
         var silver = allUsers.length * 25 / 100
         var bronze = allUsers.length * 50 / 100
