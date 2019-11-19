@@ -2,12 +2,55 @@
 
 'use strict'
 
-function isLoggedin(authorised) {
+function checkLAuthorised(authorised) {
 	if(authorised !== true) {
 		return false
 	} else {
 		return true
 	}
+}
+
+function isLoggedin(sessionid) {
+	if(isNotNull(sessionid, sessionid) === false) {
+		throw Error('You don\'t login yet')
+	} else {
+		return true
+	}
+}
+
+function isNull(variable, numberOrlength) {
+	if(variable === undefined || variable === null || numberOrlength === 0) {
+		return true
+	} else {
+		return false
+	}
+}
+
+function isNotNull(variable, numberOrlength) {
+	if(variable === undefined || variable === null || numberOrlength === 0) {
+		return false
+	} else {
+		return true
+	}
+}
+
+function isAuthor(authorid, sessionid) {
+	if(authorid === sessionid) {
+		return true
+	} else {
+		throw Error('No permission')
+	}
+}
+
+function mustHaveParameters(query) {
+	for(let i = 0; i < query.length; i ++) {
+		if(isNull(query.variable, query.numberOrlength)) {
+			throw Error('Access in a wrong way')
+		} else {
+			continue
+		}
+	}
+	return true
 }
 
 function isZeroSizeOfImage(size) {
@@ -18,12 +61,21 @@ function isZeroSizeOfImage(size) {
 	}
 }
 
-function isNotNull(variable, numberOrlength) {
-	if(variable === undefined || variable === null || numberOrlength === 0) {
-		return false
-	} else {
-		return true
+function flagCheckQuestionAuthor(checkAuthor, sessionid) {
+	if(checkAuthor.nolist !== undefined) {
+		throw Error('No Question found')
 	}
+	isAuthor(checkAuthor[0].authorId, sessionid)
+	if(checkAuthor[0].solved !== 0) {
+		throw Error('Already Solved')
+	}
+}
+
+function flagCheckAnswer(flagAnswer, faqId, sessionid) {
+	if(flagAnswer.nolist !== undefined) throw Error('No Answer found')
+	if(flagAnswer[0].faqId !== faqId) throw Error('Access in a wrong way')
+	if(flagAnswer[0].flagged !== 0) throw Error('Already Flagged')
+	if(flagAnswer[0].authorId === sessionid) throw Error('Can\'t flag your own answer')
 }
 
 function getRateAverage(getAnswerRate) {
@@ -84,4 +136,5 @@ function getRateStarHTML(averageRate) {
 	return averageRateHTML
 }
 
-module.exports = { isLoggedin, isZeroSizeOfImage, isNotNull, getRateAverage, getRateStarHTML }
+module.exports = { checkLAuthorised, isLoggedin, isNull, isNotNull, isAuthor, mustHaveParameters,
+	isZeroSizeOfImage, flagCheckAnswer, flagCheckQuestionAuthor, getRateAverage, getRateStarHTML }

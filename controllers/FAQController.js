@@ -24,7 +24,7 @@ const jimp = require('jimp'),
 module.exports = {
 	questionList: async ctx => {
 		try {
-			const checkLoggedin = func.isLoggedin(ctx.session.authorised)
+			const checkLoggedin = func.checkLAuthorised(ctx.session.authorised)
 			const getList = await QuestionListService.getQuestions({})
 			for(let i = 0; i < getList.length; i ++) {
 				getList[i].rankedUser = await ContributedRankingService.rankedContribute({userid: getList[i].authorId})
@@ -37,7 +37,7 @@ module.exports = {
 	},
 	newQuestionForm: async ctx => {
 		try {
-			const checkLoggedin = func.isLoggedin(ctx.session.authorised)
+			const checkLoggedin = func.checkLAuthorised(ctx.session.authorised)
 			await ctx.render('writeQuestion', {check: checkLoggedin})
 		} catch(err) {
 			console.log(err)
@@ -63,7 +63,7 @@ module.exports = {
 	},
 	detailsQuestion: async ctx => {
 		try {
-			const checkLoggedin = func.isLoggedin(ctx.session.authorised),
+			const checkLoggedin = func.checkLAuthorised(ctx.session.authorised),
 			    detail = await DetailQuestionService.detailsQuestion({ faqId: parseInt(ctx.params.id) })
 			detail.rankedUser = await ContributedRankingService.rankedContribute({userid: detail.authorId})
 			if(detail.nolist !== undefined) throw Error('No FAQ found')
