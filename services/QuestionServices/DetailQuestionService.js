@@ -4,7 +4,7 @@
 
 const userModel = require('../../models/User'),
 	faqModel = require('../../models/FAQ'),
-	func = require('../../function'),
+	func = require('../../function/function.general'),
 	dbName = 'website.db'
 
 exports.detailsQuestion = async query => {

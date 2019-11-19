@@ -3,7 +3,8 @@
 'use strict'
 
 const faqModel = require('../../models/FAQ'),
-	func = require('../../function'),
+	func = require('../../function/function.general'),
+	afunc = require('../../function/function.answer'),
 	dbName = 'website.db'
 
 exports.flagAnswer = async query => {
@@ -17,9 +18,9 @@ exports.flagAnswer = async query => {
 			{variable: query.flagtype, numberOrlength: query.flagtype}
 		])
 		const checkAuthor = await FAQ.getQuestions({faqId: query.faqId})
-		func.flagCheckQuestionAuthor(checkAuthor, query.sessionId)
+		afunc.flagCheckQuestionAuthor(checkAuthor, query.sessionId)
 		const flagAnswer = await FAQ.getAnswers({id: query.answerId})
-		func.flagCheckAnswer(flagAnswer, query.faqId, query.sessionId)
+		afunc.flagCheckAnswer(flagAnswer, query.faqId, query.sessionId)
 		await FAQ.flagAnswer(query)
 		return true
 	} catch (e) {

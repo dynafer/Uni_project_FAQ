@@ -3,7 +3,7 @@
 'use strict'
 
 const faqModel = require('../../models/FAQ'),
-	func = require('../../function'),
+	func = require('../../function/function.general'),
 	dbName = 'website.db'
 
 exports.newAnswer = async query => {

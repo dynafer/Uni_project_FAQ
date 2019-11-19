@@ -3,7 +3,8 @@
 
 const userModel = require('../../models/User'),
 	faqModel = require('../../models/FAQ'),
-	func = require('../../function'),
+	func = require('../../function/function.general'),
+	afunc = require('../../function/function.answer'),
 	dbName = 'website.db'
 
 exports.getAnswers = async query => {
@@ -15,8 +16,8 @@ exports.getAnswers = async query => {
 				getQuestion = await FAQ.getQuestions({faqId: query.faqId})
 			list[i].author = getAuthorName[0].user
 			if(getQuestion.nolist !== undefined) throw Error('The question doesn\'t exist')
-			const averageRate = String(func.getRateAverage(getAnswerRate))
-			list[i].averageRate = func.getRateStarHTML(averageRate)
+			const averageRate = String(afunc.getRateAverage(getAnswerRate))
+			list[i].averageRate = afunc.getRateStarHTML(averageRate)
 			list[i].sessionid = func.isNotNull(query.sessionid, query.sessionid) === true ? query.sessionid : 0
 			list[i].questionAuthor = getQuestion[0].authorId
 			list[i].solved = getQuestion[0].solved

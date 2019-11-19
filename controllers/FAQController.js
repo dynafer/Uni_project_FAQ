@@ -3,7 +3,7 @@
 'use strict'
 
 const jimp = require('jimp'),
-	func = require('../function'),
+	func = require('../function/function.general'),
 
 	// User Services
 	ContributeService = require('../services/UserServices/ContributeService'),

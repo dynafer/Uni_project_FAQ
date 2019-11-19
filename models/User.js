@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt-promise')
 const fs = require('fs-extra')
 const mime = require('mime-types')
 const sqlite = require('sqlite-async')
-const func = require('../function')
+const func = require('../function/function.general')
 const saltRounds = 10
 
 module.exports = class User {
