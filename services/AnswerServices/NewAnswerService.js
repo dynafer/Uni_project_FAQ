@@ -1,20 +1,23 @@
+/*eslint linebreak-style: ["error", "windows"]*/
 
 'use strict'
 
-var faqModel = require('../../models/FAQ')
+const faqModel = require('../../models/FAQ'),
+	func = require('../../function'),
+	dbName = 'website.db'
 
-exports.newAnswer = async function (query) {
-    try {
-        var FAQ = await new faqModel("website.db")
-		if(query.author === 0 || query.author === undefined || query.author === null) throw Error(`You don't login yet`)
-		if(query.faqId === 0 || query.faqId === undefined || query.faqId === null) throw Error(`You accessed in a wrong way`)
-        if(query.description.length === 0) throw Error(`missing description`)
-        const checkSolved = await FAQ.getQuestions({faqId: query.faqId})
-        if(checkSolved.nolist !== undefined) throw Error(`No Question found`)
-        if(checkSolved[0].solved !== 0) throw Error(`Already Solved`)
-        const checkAdd = await FAQ.newAnswer(query)
-        return checkAdd;
-    } catch (e) {
-        throw e
-    }
+exports.newAnswer = async query => {
+	try {
+		const FAQ = await new faqModel(dbName)
+		func.isLoggedin(query.sessionId)
+		func.mustHaveParameter([{variable: query.faqId, numberOrlength: query.faqId}])
+		if(query.description.length === 0) throw Error('missing description')
+		const checkSolved = await FAQ.getQuestions({faqId: query.faqId})
+		if(checkSolved.nolist !== undefined) throw Error('No Question found')
+		if(checkSolved[0].solved !== 0) throw Error('Already Solved')
+		const checkAdd = await FAQ.newAnswer(query)
+		return checkAdd
+	} catch (e) {
+		throw e
+	}
 }
