@@ -78,6 +78,11 @@ function flagCheckAnswer(flagAnswer, faqId, sessionid) {
 	if(flagAnswer[0].authorId === sessionid) throw Error('Can\'t flag your own answer')
 }
 
+function rateCheckAnswer(getAnswer, sessionid) {
+	if(getAnswer.nolist !== undefined) throw Error('No Answer found')
+	if(getAnswer[0].authorId === sessionid) throw new Error('Can\'t rate your own answer')
+}
+
 function getRateAverage(getAnswerRate) {
 	let averageRate = 0.0
 	if(getAnswerRate.nolist === undefined) {
@@ -137,4 +142,5 @@ function getRateStarHTML(averageRate) {
 }
 
 module.exports = { checkLAuthorised, isLoggedin, isNull, isNotNull, isAuthor, mustHaveParameters,
-	isZeroSizeOfImage, flagCheckAnswer, flagCheckQuestionAuthor, getRateAverage, getRateStarHTML }
+	isZeroSizeOfImage, flagCheckAnswer, flagCheckQuestionAuthor,
+	rateCheckAnswer, getRateAverage, getRateStarHTML }

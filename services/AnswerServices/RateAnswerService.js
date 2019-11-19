@@ -1,22 +1,25 @@
+/*eslint linebreak-style: ["error", "windows"]*/
 
 'use strict'
 
-var faqModel = require('../../models/FAQ')
+const faqModel = require('../../models/FAQ'),
+	func = require('../../function'),
+	dbName = 'website.db'
 
-exports.rateAnswer = async function (query) {
-    try {
-        var FAQ = await new faqModel("website.db")
-        if(query.sessionId === 0 || query.sessionId === null || query.sessionId === undefined) throw Error(`You don't login yet`)
-        if(query.answerId === 0 || query.answerId === null || query.answerId === undefined) throw Error(`Access in a wrong way`)
-        if(query.rate < 1 || query.rate > 5 || query.rate === null || query.rate === undefined) throw new Error(`Error to rate`)
-        const getAnswer = await FAQ.getAnswers({id: query.answerId})
-        if(getAnswer.nolist !== undefined) throw Error(`No Answer found`)
-        if(getAnswer[0].authorId === query.sessionId) throw new Error(`Can't rate your own answer`)
-        const getAnswerRate = await FAQ.getAnswerRates({answerId: query.answerId, userId: query.sessionId})
-        if(getAnswerRate.nolist === undefined) throw Error(`Already Rated`)
-        const checkAdd = await FAQ.newRate(query)
-        return checkAdd;
-    } catch (e) {
-        throw e
-    }
+exports.rateAnswer = async query => {
+	try {
+		const FAQ = await new faqModel(dbName),
+			maxRate = 5
+		func.isLoggedin(query.sessionId)
+		func.mustHaveParameter([{variable: query.answerId, numberOrlength: query.answerId}])
+		if(func.isNull(query.rate, query.rate) || query.rate > maxRate) throw new Error('Error to rate')
+		const getAnswer = await FAQ.getAnswers({id: query.answerId})
+		func.rateCheckAnswer(getAnswer, query.sessionId)
+		const getAnswerRate = await FAQ.getAnswerRates({answerId: query.answerId, userId: query.sessionId})
+		if(getAnswerRate.nolist === undefined) throw Error('Already Rated')
+		const checkAdd = await FAQ.newRate(query)
+		return checkAdd
+	} catch (e) {
+		throw e
+	}
 }
