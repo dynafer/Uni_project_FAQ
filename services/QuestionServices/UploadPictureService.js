@@ -1,15 +1,18 @@
+/*eslint linebreak-style: ["error", "windows"]*/
 
 'use strict'
 
-var faqModel = require('../../models/FAQ')
+const faqModel = require('../../models/FAQ'),
+	func = require('../../function'),
+	dbName = 'website.db'
 
-exports.uploadPicture = async function (files) {
-    try {
-        if(files.listid === 0 || files.listid === null || files.listid === undefined) throw Error(`Error during uploading`)
-        var FAQ = await new faqModel("website.db")
-        var upload = await FAQ.uploadPicture(files)
-        return upload;
-    } catch (e) {
-        throw e
-    }
+exports.uploadPicture = async files => {
+	try {
+		func.mustHaveParameter([{variable: files.listid, numberOrlength: files.listid}])
+		const FAQ = await new faqModel(dbName),
+			upload = await FAQ.uploadPicture(files)
+		return upload
+	} catch (e) {
+		throw e
+	}
 }
