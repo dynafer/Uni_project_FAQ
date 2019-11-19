@@ -18,4 +18,12 @@ function isZeroSizeOfImage(size) {
 	}
 }
 
-module.exports = { isLoggedin, isZeroSizeOfImage }
+function isNull(variable, numberOrlength) {
+	if(variable === undefined || variable === null || numberOrlength === 0) {
+		return false
+	} else {
+		return true
+	}
+}
+
+module.exports = { isLoggedin, isZeroSizeOfImage, isNull }
