@@ -23,11 +23,11 @@ module.exports = class User {
 
 	async getUsers(query) {
 		let queryCondition
-		if(func.isNull(query.username, query.username.length)) {
+		if(func.isNotNull(query.username, query.username.length)) {
 			queryCondition = `WHERE user="${query.username}"`
-		} else if(func.isNull(query.userid, query.userid)) {
+		} else if(func.isNotNull(query.userid, query.userid)) {
 			queryCondition = `WHERE id="${query.userid}"`
-		} else if(func.isNull(query.contribution, 1)) {
+		} else if(func.isNotNull(query.contribution, 1)) {
 			queryCondition = 'ORDER BY contribution DESC'
 		}
 		const sql = `SELECT * FROM users ${queryCondition};`

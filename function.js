@@ -18,7 +18,7 @@ function isZeroSizeOfImage(size) {
 	}
 }
 
-function isNull(variable, numberOrlength) {
+function isNotNull(variable, numberOrlength) {
 	if(variable === undefined || variable === null || numberOrlength === 0) {
 		return false
 	} else {
@@ -26,4 +26,4 @@ function isNull(variable, numberOrlength) {
 	}
 }
 
-module.exports = { isLoggedin, isZeroSizeOfImage, isNull }
+module.exports = { isLoggedin, isZeroSizeOfImage, isNotNull }
