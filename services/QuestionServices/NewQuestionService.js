@@ -1,17 +1,20 @@
+/*eslint linebreak-style: ["error", "windows"]*/
 
 'use strict'
 
-var faqModel = require('../../models/FAQ')
+const faqModel = require('../../models/FAQ'),
+	func = require('../../function'),
+	dbName = 'website.db'
 
-exports.newQuestion = async function (query) {
-    try {
-		if(query.author === 0 || query.author === null || query.author === undefined) throw Error("You don't login yet")
+exports.newQuestion = async query => {
+	try {
+		func.isLoggedin(query.author)
 		if(query.title.length === 0) throw Error('missing title')
-        if(query.description.length === 0) throw Error('missing description')
-        var FAQ = await new faqModel("website.db")
-        const checkAdd = await FAQ.newQuestion(query)
-        return checkAdd;
-    } catch (e) {
-        throw e
-    }
+		if(query.description.length === 0) throw Error('missing description')
+		const FAQ = await new faqModel(dbName),
+			checkAdd = await FAQ.newQuestion(query)
+		return checkAdd
+	} catch (e) {
+		throw e
+	}
 }
