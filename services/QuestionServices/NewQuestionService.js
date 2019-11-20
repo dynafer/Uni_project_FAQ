@@ -9,6 +9,9 @@ const faqModel = require('../../models/FAQ'),
 exports.newQuestion = async query => {
 	try {
 		func.isLoggedin(query.author)
+		func.mustHaveParameters([{variable: query.title, numberOrlength: query.title.length},
+			{variable: query.description, numberOrlength: query.description.length}
+		])
 		if(query.title.length === 0) throw Error('missing title')
 		if(query.description.length === 0) throw Error('missing description')
 		const FAQ = await new faqModel(dbName),
