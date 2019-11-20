@@ -2,6 +2,13 @@
 
 'use strict'
 
+function checkRegisterInputValid(query) {
+	if(query.user.length === 0) throw Error('missing username')
+	if(query.pass.length === 0) throw Error('missing password')
+	if(query.pass2.length === 0) throw Error('missing confirm password')
+	if(query.pass !== query.pass2) throw Error('confirm password are incorrect')
+}
+
 function calculateRank(preUser, curUser, ranked, nextRank) {
 	if(preUser === curUser) {
 		nextRank = nextRank + 1
@@ -42,4 +49,4 @@ function getAUserRank(allUsers, userid) {
 	return 'noStar'
 }
 
-module.exports = { getAUserRank }
+module.exports = { checkRegisterInputValid, getAUserRank }
