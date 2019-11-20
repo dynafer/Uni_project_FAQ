@@ -9,7 +9,7 @@ const faqModel = require('../../models/FAQ'),
 exports.newAnswer = async query => {
 	try {
 		const FAQ = await new faqModel(dbName)
-		func.isLoggedin(query.sessionId)
+		func.isLoggedin(query.author)
 		func.mustHaveParameter([{variable: query.faqId, numberOrlength: query.faqId}])
 		if(query.description.length === 0) throw Error('missing description')
 		const checkSolved = await FAQ.getQuestions({faqId: query.faqId})
