@@ -12,7 +12,7 @@ exports.contribute = async query => {
 		const User = await new userModel(dbName),
 		    getUser = await User.getUsers({userid: query.userId})
 		if(getUser.length === 0) throw Error('Error during contributing')
-		if((getUser[0].contribution + query.contribution) <= 0) {
+		if(getUser[0].contribution + query.contribution <= 0) {
 			query.contribution = 0
 		} else {
 			query.contribution = getUser[0].contribution + query.contribution
