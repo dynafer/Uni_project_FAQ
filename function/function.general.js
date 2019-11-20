@@ -45,7 +45,7 @@ function isAuthor(authorid, sessionid) {
 function mustHaveParameters(query) {
 	for(let i = 0; i < query.length; i ++) {
 		if(isNull(query.variable, query.numberOrlength)) {
-			throw Error('Access in a wrong way')
+			return Error('Access in a wrong way')
 		} else {
 			continue
 		}

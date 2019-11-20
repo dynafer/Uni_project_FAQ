@@ -53,7 +53,7 @@ module.exports = class FAQ {
 			}
 			const sql = `INSERT INTO questions(title, description, authorId, imageBool, imageType) 
 											VALUES(?, ?, ?, ?, ?)`
-			await this.db.run(sql,[query.title, query.description, query.author,query.imageBool, query.imageType])
+			await this.db.run(sql, query.title, query.description, query.author,query.imageBool, query.imageType)
 			return true
 		} catch(err) {
 			throw err
@@ -72,7 +72,7 @@ module.exports = class FAQ {
 			encodedData = img64
 		})
 		const sql = 'INSERT INTO questionThumbnails(faqId, encoded) VALUES(?, ?)'
-		await this.db.run(sql, [query.listid, encodedData])
+		await this.db.run(sql, query.listid, encodedData)
 	}
 
 	async QuestionThumbnail(query) {
@@ -105,7 +105,7 @@ module.exports = class FAQ {
 	async newAnswer(query) {
 		try {
 			const sql = 'INSERT INTO answers(description, faqId, authorId) VALUES(?, ?, ?)'
-			await this.db.run(sql, [query.description, query.faqId, query.author])
+			await this.db.run(sql, query.description, query.faqId, query.author)
 			return true
 		} catch(err) {
 			throw err
@@ -146,7 +146,7 @@ module.exports = class FAQ {
 	async newRate(query) {
 		try {
 			const sql = 'INSERT INTO answersRate(userId, answerId, rate) VALUES(?, ?, ?)'
-			await this.db.run(sql, [query.sessionId, query.answerId, query.rate])
+			await this.db.run(sql, query.sessionId, query.answerId, query.rate)
 			return true
 		} catch(err) {
 			throw err

@@ -9,7 +9,7 @@ const userModel = require('../../models/User'),
 
 exports.detailsQuestion = async query => {
 	try {
-		func.mustHaveParameter([{variable: query.faqId, numberOrlength: query.faqId}])
+		func.mustHaveParameters([{variable: query.faqId, numberOrlength: query.faqId}])
 		const FAQ = await new faqModel(dbName), User = await new userModel(dbName)
 		const details = await FAQ.getQuestions(query)
 		if(details.nolist === undefined) {

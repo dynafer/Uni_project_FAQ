@@ -23,12 +23,15 @@ module.exports = class User {
 
 	async getUsers(query) {
 		let queryCondition
-		if(func.isNotNull(query.username, query.username.length)) {
+		const usernameLength = query.username ? query.username.length : 0
+		if(func.isNotNull(query.username, usernameLength)) {
 			queryCondition = `WHERE user="${query.username}"`
 		} else if(func.isNotNull(query.userid, query.userid)) {
 			queryCondition = `WHERE id="${query.userid}"`
 		} else if(func.isNotNull(query.contribution, 1)) {
 			queryCondition = 'ORDER BY contribution DESC'
+		} else {
+			throw Error('Access in a wrong way')
 		}
 		const sql = `SELECT * FROM users ${queryCondition};`
 		const records = await this.db.all(sql)
@@ -39,7 +42,7 @@ module.exports = class User {
 		try {
 			query.pass = await bcrypt.hash(query.pass, saltRounds)
 			const sql = 'INSERT INTO users(user, pass, contribution) VALUES(?, ?, ?)'
-			await this.db.run(sql, [query.user, query.pass, 0])
+			await this.db.run(sql, query.user, query.pass, 0)
 			return true
 		} catch(err) {
 			throw err

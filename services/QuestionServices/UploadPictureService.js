@@ -8,7 +8,7 @@ const faqModel = require('../../models/FAQ'),
 
 exports.uploadPicture = async files => {
 	try {
-		func.mustHaveParameter([{variable: files.listid, numberOrlength: files.listid}])
+		func.mustHaveParameters([{variable: files.listid, numberOrlength: files.listid}])
 		const FAQ = await new faqModel(dbName),
 			upload = await FAQ.uploadPicture(files)
 		return upload

@@ -12,8 +12,10 @@ exports.rateAnswer = async query => {
 		const FAQ = await new faqModel(dbName),
 			maxRate = 5
 		func.isLoggedin(query.sessionId)
-		func.mustHaveParameter([{variable: query.answerId, numberOrlength: query.answerId}])
-		if(func.isNull(query.rate, query.rate) || query.rate > maxRate) throw new Error('Error to rate')
+		func.mustHaveParameters([{variable: query.answerId, numberOrlength: query.answerId},
+			{variable: query.rate, numberOrlength: query.rate}
+		])
+		if(query.rate > maxRate || query.rate < 1) throw new Error('Error to rate')
 		const getAnswer = await FAQ.getAnswers({id: query.answerId})
 		afunc.rateCheckAnswer(getAnswer, query.sessionId)
 		const getAnswerRate = await FAQ.getAnswerRates({answerId: query.answerId, userId: query.sessionId})

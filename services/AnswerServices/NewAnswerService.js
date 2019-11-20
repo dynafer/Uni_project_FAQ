@@ -10,7 +10,7 @@ exports.newAnswer = async query => {
 	try {
 		const FAQ = await new faqModel(dbName)
 		func.isLoggedin(query.author)
-		func.mustHaveParameter([{variable: query.faqId, numberOrlength: query.faqId},
+		func.mustHaveParameters([{variable: query.faqId, numberOrlength: query.faqId},
 			{variable: query.description, numberOrlength: 1}
 		])
 		if(query.description.length === 0) throw Error('missing description')

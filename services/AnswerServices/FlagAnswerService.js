@@ -13,7 +13,7 @@ exports.flagAnswer = async query => {
 		if(query.flagtype !== flagTypes['0'] && query.flagtype !== flagTypes['1']) throw Error('Access in a wrong way')
 		const FAQ = await new faqModel(dbName)
 		func.isLoggedin(query.sessionId)
-		func.mustHaveParameter([{variable: query.faqId, numberOrlength: query.faqId},
+		func.mustHaveParameters([{variable: query.faqId, numberOrlength: query.faqId},
 			{variable: query.answerId, numberOrlength: query.answerId},
 			{variable: query.flagtype, numberOrlength: query.flagtype}
 		])

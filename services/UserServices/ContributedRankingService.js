@@ -9,7 +9,7 @@ const userModel = require('../../models/User'),
 
 exports.rankedContribute = async query => {
 	try {
-		func.mustHaveParameter([{variable: query.userid, numberOrlength: query.userid}])
+		func.mustHaveParameters([{variable: query.userid, numberOrlength: query.userid}])
 		const User = await new userModel(dbName),
 			getUser = await User.getUsers({userid: query.userid})
 		if(getUser.length === 0) throw Error('Error during getting information')
