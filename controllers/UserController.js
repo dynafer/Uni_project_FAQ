@@ -2,19 +2,15 @@
 
 'use strict'
 
-const LoginService = require('../services/UserServices/LoginService'),
+const func = require('../function/function.general'),
+	LoginService = require('../services/UserServices/LoginService'),
 	RegisterService = require('../services/UserServices/RegisterService'),
 	UploadAvatarService = require('../services/UserServices/UploadAvatarService')
 
 module.exports = {
 	home: async ctx => {
 		try {
-			let checkLoggedin = false
-			if(ctx.session.authorised !== true) {
-				checkLoggedin = false
-			} else {
-				checkLoggedin = true
-			}
+			const checkLoggedin = func.checkLAuthorised(ctx.session.authorised)
 			await ctx.render('index', {check: checkLoggedin})
 		} catch(err) {
 			console.log(err)
