@@ -23,7 +23,7 @@ function calculateRank(preUser, curUser, ranked, nextRank) {
 
 function findAUserRank(allUsers, userid) {
 	let ranked = 0, nextRank = 0
-	for(const i = 0; i < allUsers.length; i ++) {
+	for(let i = 0; i < allUsers.length; i ++) {
 		if(i !== 0) {
 			const {rank, next} = calculateRank(allUsers[i-1].contribution, allUsers[i].contribution, ranked, nextRank)
 			ranked = rank
