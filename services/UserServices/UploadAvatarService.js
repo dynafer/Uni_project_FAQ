@@ -1,15 +1,16 @@
-
+/*eslint linebreak-style: ["error", "windows"]*/
 'use strict'
 
-var userModel = require('../../models/User')
+const userModel = require('../../models/User'),
+	dbName = 'website.db'
 
-exports.uploadAvatar = async function (files) {
-    try {
-        if(files.user.length === 0) throw Error(`Error during uploading`)
-        var User = await new userModel("website.db")
-        var upload = await User.uploadPicture(files)
-        return upload;
-    } catch (e) {
-        throw e
-    }
+exports.uploadAvatar = async files => {
+	try {
+		if(files.user.length === 0) throw Error('Error during uploading')
+		const User = await new userModel(dbName),
+			upload = await User.uploadPicture(files)
+		return upload
+	} catch (e) {
+		throw e
+	}
 }
