@@ -142,3 +142,95 @@ describe('UserFunction()', () => {
 	})
 
 })
+
+describe('AnswerFunction()', () => {
+
+	test('flagCheckAnswer()', async done => {
+		expect.assertions(4)
+		try {
+			afunc.flagCheckAnswer({nolist: true}, 1, 1)
+		} catch(err) {
+			expect(err).toEqual( new Error('No Answer found') )
+		}
+		try {
+			afunc.flagCheckAnswer([{faqId: 1, flagged: 0, authorId: 1}], 2, 2)
+		} catch(err) {
+			expect(err).toEqual( new Error('Access in a wrong way') )
+		}
+		try {
+			afunc.flagCheckAnswer([{faqId: 1, flagged: 1, authorId: 1}], 1, 2)
+		} catch(err) {
+			expect(err).toEqual( new Error('Already Flagged') )
+		}
+		try {
+			afunc.flagCheckAnswer([{faqId: 1, flagged: 0, authorId: 1}], 1, 1)
+		} catch(err) {
+			expect(err).toEqual( new Error('Can\'t flag your own answer') )
+		}
+		done()
+	})
+
+	test('flagCheckQuestionAuthor()', async done => {
+		expect.assertions(3)
+		try {
+			afunc.flagCheckQuestionAuthor({nolist: true}, 1)
+		} catch(err) {
+			expect(err).toEqual( new Error('No Question found') )
+		}
+		try {
+			afunc.flagCheckQuestionAuthor([{authorId: 1, solved: 0}], 2)
+		} catch(err) {
+			expect(err).toEqual( new Error('No permission') )
+		}
+		try {
+			afunc.flagCheckQuestionAuthor([{authorId: 1, solved: 1}], 1)
+		} catch(err) {
+			expect(err).toEqual( new Error('Already Solved') )
+		}
+		done()
+	})
+
+	test('rateCheckAnswer()', async done => {
+		expect.assertions(2)
+		try {
+			afunc.rateCheckAnswer({nolist: true}, 1)
+		} catch(err) {
+			expect(err).toEqual( new Error('No Answer found') )
+		}
+		try {
+			afunc.rateCheckAnswer([{authorId: 1}], 1)
+		} catch(err) {
+			expect(err).toEqual( new Error('Can\'t rate your own answer') )
+		}
+		done()
+	})
+
+	test('getRateAverage()', async done => {
+		expect.assertions(2)
+		expect(afunc.getRateAverage([{rate: 3.5}, {rate: 2.5}, {rate: 4}])).toBe('3.3')
+		expect(afunc.getRateAverage([{rate: 0}, {rate: 0}, {rate: 0}])).toBe('0.0')
+		done()
+	})
+
+	test('getRateStarHTML()', async done => {
+		expect.assertions(4)
+		expect(afunc.getRateStarHTML('4'))
+			.toBe('<span class=\"full checked\"></span><span class=\"full checked\"></span>'+
+                '<span class=\"full checked\"></span><span class=\"full checked\"></span>'+
+                '<span class=\"full\"></span>')
+		expect(afunc.getRateStarHTML('3.7'))
+			.toBe('<span class=\"full checked\"></span><span class=\"full checked\"></span>'+
+                '<span class=\"full checked\"></span><span class=\"half checked\"></span>'+
+                '<span class=\"full\"></span><span class=\"full\"></span>')
+		expect(afunc.getRateStarHTML('.7'))
+			.toBe('<span class=\"half checked\"></span><span class=\"full\"></span>'+
+                '<span class=\"full\"></span><span class=\"full\"></span>'+
+                '<span class=\"full\"></span><span class=\"full\"></span>')
+		expect(afunc.getRateStarHTML())
+			.toBe('<span class=\"full\"></span><span class=\"full\"></span>'+
+                '<span class=\"full\"></span><span class=\"full\"></span>'+
+                '<span class=\"full\"></span>')
+		done()
+	})
+
+})

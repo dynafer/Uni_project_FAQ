@@ -42,9 +42,10 @@ function getRateAverage(getAnswerRate) {
 function beforeGetRateStar(averageRate) {
 	const boolZero = averageRate === '0' || averageRate === '0.0' ? true : false
 	averageRate = averageRate.split('.')
-	if(averageRate[1] === NaN) averageRate[1] = '0'
 	averageRate[0] = parseInt(averageRate[0])
 	averageRate[1] = parseInt(averageRate[1])
+	if(isNaN(averageRate[0])) averageRate[0] = 0
+	if(isNaN(averageRate[1])) averageRate[1] = 0
 	return {data: averageRate, boolZero: boolZero}
 }
 
@@ -77,7 +78,8 @@ function getRateStar(averageRate) {
 }
 
 function getRateStarHTML(averageRate) {
-	if(averageRate === 0) averageRate = 0.0
+	const averageRateLength = averageRate ? averageRate.length : 0
+	if(func.isNull(averageRate, averageRateLength)) averageRate = '0.0'
 	const tempAverageRate = beforeGetRateStar(String(averageRate))
 	let averageRateHTML
 	if(tempAverageRate.boolZero === true) {
