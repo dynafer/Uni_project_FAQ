@@ -97,3 +97,48 @@ describe('GeneralFunction()', () => {
 	})
 
 })
+
+describe('UserFunction()', () => {
+
+	test('checkRegisterInputValid()', async done => {
+		expect.assertions(4)
+		try {
+			ufunc.checkRegisterInputValid({user: '', pass: 'test', pass2: 'test'})
+		} catch(err) {
+			expect(err).toEqual( new Error('missing username') )
+		}
+		try {
+			ufunc.checkRegisterInputValid({user: 'test', pass: '', pass2: 'test'})
+		} catch(err) {
+			expect(err).toEqual( new Error('missing password') )
+		}
+		try {
+			ufunc.checkRegisterInputValid({user: 'test', pass: 'test', pass2: ''})
+		} catch(err) {
+			expect(err).toEqual( new Error('missing confirm password') )
+		}
+		try {
+			ufunc.checkRegisterInputValid({user: 'test', pass: 'test1', pass2: 'test2'})
+		} catch(err) {
+			expect(err).toEqual( new Error('confirm password is different from password') )
+		}
+		done()
+	})
+
+	test('getAUserRank()', async done => {
+		expect.assertions(4)
+		const testusers = [
+				{id: 1, contribution: 150},
+				{id: 2, contribution: 130},
+				{id: 3, contribution: 120},
+				{id: 4, contribution: 50}
+			],
+			userid1 = 1, userid2 = 2, userid3 = 3, userid4 = 4
+		expect(ufunc.getAUserRank(testusers, userid1)).toBe('goldStar')
+		expect(ufunc.getAUserRank(testusers, userid2)).toBe('silverStar')
+		expect(ufunc.getAUserRank(testusers, userid3)).toBe('bronzeStar')
+		expect(ufunc.getAUserRank(testusers, userid4)).toBe('noStar')
+		done()
+	})
+
+})
