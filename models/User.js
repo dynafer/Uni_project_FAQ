@@ -56,8 +56,8 @@ module.exports = class User {
 
 	async login(query) {
 		try {
-			const sql = `SELECT id, pass FROM users WHERE user = "${query.user}";`
-			const record = await this.db.get(sql)
+			const sql = 'SELECT id, pass FROM users WHERE user = ?;'
+			const record = await this.db.get(sql, query.user)
 			const valid = await bcrypt.compare(query.pass, record.pass)
 			return {authorised: valid, userid: record.id}
 		} catch(err) {
@@ -67,8 +67,12 @@ module.exports = class User {
 
 	async contribute(query) {
 		try {
-			const sql = `UPDATE users SET contribution = ${query.contribution} WHERE id = ${query.userId}`
-			await this.db.run(sql)
+			let sql = 'SELECT id, pass FROM users WHERE id = ?;'
+			const record = await this.db.get(sql, query.userId)
+			const recordLength = record ? record.length : 0
+			if(func.isNull(record, recordLength)) throw Error('Access in a wrong way')
+			sql = 'UPDATE users SET contribution = ? WHERE id = ?'
+			await this.db.run(sql, query.contribution, query.userId)
 			return true
 		} catch(err) {
 			throw err
