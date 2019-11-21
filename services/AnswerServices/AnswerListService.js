@@ -18,7 +18,7 @@ exports.getAnswers = async query => {
 			if(getQuestion.nolist !== undefined) throw Error('The question doesn\'t exist')
 			const averageRate = String(afunc.getRateAverage(getAnswerRate))
 			list[i].averageRate = afunc.getRateStarHTML(averageRate)
-			list[i].sessionid = func.isNotNull(query.sessionid, query.sessionid) === true ? query.sessionid : 0
+			list[i].sessionid = func.isNotNull(query.sessionid, query.sessionid) === true ? query.sessionid : undefined
 			list[i].questionAuthor = getQuestion[0].authorId
 			list[i].solved = getQuestion[0].solved
 		}
