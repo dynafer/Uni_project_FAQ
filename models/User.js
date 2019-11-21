@@ -27,7 +27,7 @@ module.exports = class User {
 		if(func.isNotNull(query.username, usernameLength)) {
 			queryCondition = `WHERE user="${query.username}"`
 		} else if(func.isNotNull(query.userid, query.userid)) {
-			queryCondition = `WHERE id="${query.userid}"`
+			queryCondition = `WHERE id=${query.userid}`
 		} else if(func.isNotNull(query.contribution, 1)) {
 			queryCondition = 'ORDER BY contribution DESC'
 		} else {
