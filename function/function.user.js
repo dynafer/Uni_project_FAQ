@@ -6,7 +6,7 @@ function checkRegisterInputValid(query) {
 	if(query.user.length === 0) throw Error('missing username')
 	if(query.pass.length === 0) throw Error('missing password')
 	if(query.pass2.length === 0) throw Error('missing confirm password')
-	if(query.pass !== query.pass2) throw Error('confirm password are incorrect')
+	if(query.pass !== query.pass2) throw Error('confirm password is different from password')
 }
 
 function calculateRank(preUser, curUser, ranked, nextRank) {

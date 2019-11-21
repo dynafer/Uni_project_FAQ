@@ -61,10 +61,10 @@ describe('register()', () => {
 		done()
 	})
 
-	test('error if password and confirm password are incorrect', async done => {
+	test('error if password and confirm password are different', async done => {
 		expect.assertions(1)
 		await expect( RegisterService.register({user: 'doej', pass: 'password1', pass2: 'password2'}) )
-			.rejects.toEqual( Error('confirm password are incorrect') )
+			.rejects.toEqual( Error('confirm password is different from password') )
 		done()
 	})
 
