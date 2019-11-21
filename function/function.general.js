@@ -35,6 +35,10 @@ function isNotNull(variable, numberOrlength) {
 }
 
 function isAuthor(authorid, sessionid) {
+	mustHaveParameters([
+		{variable: authorid, numberOrlength: authorid},
+		{variable: sessionid, numberOrlength: sessionid}
+	])
 	if(authorid === sessionid) {
 		return true
 	} else {
@@ -43,7 +47,9 @@ function isAuthor(authorid, sessionid) {
 }
 
 function mustHaveParameters(query) {
-	for(let i = 0; i < query.length; i ++) {
+	const length = query ? query.length : 0
+	if(length === 0) throw Error('Access in a wrong way')
+	for(let i = 0; i < length; i ++) {
 		if(isNull(query[i].variable, query[i].numberOrlength)) {
 			throw Error('Access in a wrong way')
 		} else {
@@ -61,5 +67,4 @@ function isZeroSizeOfImage(size) {
 	}
 }
 
-module.exports = { checkLAuthorised, isLoggedin, isNull, isNotNull, isAuthor, mustHaveParameters,
-	isZeroSizeOfImage }
+module.exports = { checkLAuthorised, isLoggedin, isNull, isNotNull, isAuthor, mustHaveParameters, isZeroSizeOfImage }
