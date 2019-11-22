@@ -1,8 +1,7 @@
 
 'use strict'
 
-const fs = require('fs-extra'),
-	mime = require('mime-types'),
+const fs = require('fs-extra'), mime = require('mime-types'),
 	sqlite = require('sqlite-async'),
 	jimp = require('jimp'),
 	func = require('../function/function.general')
@@ -124,8 +123,8 @@ module.exports = class FAQ {
 			const sql = 'UPDATE answers SET flagged = ? WHERE id = ?'
 			await this.db.run(sql, query.flagtype, query.answerId)
 			if(query.flagtype === 1) {
-				const sql2 = `UPDATE questions SET solved = 1 WHERE id = ${query.faqId}`
-				await this.db.run(sql2)
+				const sql2 = 'UPDATE questions SET solved = 1 WHERE id = ?'
+				await this.db.run(sql2, query.faqId)
 			}
 			return true
 		} catch(err) {
