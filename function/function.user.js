@@ -11,11 +11,9 @@ function checkRegisterInputValid(query) {
 function calculateRank(preUser, curUser, ranked, nextRank) {
 	if(preUser === curUser) {
 		nextRank = nextRank + 1
-	} else if(nextRank !== 0) {
+	} else {
 		ranked += nextRank
 		nextRank = 1
-	} else {
-		ranked = ranked + 1
 	}
 	return {rank: ranked, next: nextRank}
 }
