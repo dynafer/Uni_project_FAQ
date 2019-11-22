@@ -215,7 +215,7 @@ describe('contributedranking()', () => {
 		expect(valid2).toBe('silverStar')
 		expect(valid3).toBe('bronzeStar')
 		expect(valid4).toBe('bronzeStar')
-		expect(valid5).toBe('bronzeStar')
+		expect(valid5).toBe('noStar')
 		expect(valid6).toBe('noStar')
 		expect(valid7).toBe('noStar')
 		done()
