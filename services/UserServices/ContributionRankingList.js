@@ -6,11 +6,11 @@ const userModel = require('../../models/User'),
 	ContributedRankingService = require('./ContributedRankingService'),
 	dbName = 'website.db'
 
-exports.rankedContribute = async function() {
+exports.rankingList = async function() {
 	try {
 		const User = await new userModel(dbName),
 			allUsers = await User.getUsers({contribution: true})
-		if(allUsers.length === 0) throw Error('Error during getting information')
+		if(allUsers.length === 0) return {nolist: true}
 		for(let i = 0; i < allUsers.length; i++) {
 			allUsers[i].pass = null
 			allUsers[i].rank = ufunc.findAUserRank(allUsers, allUsers[i].id) + 1

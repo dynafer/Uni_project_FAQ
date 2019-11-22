@@ -59,7 +59,7 @@ module.exports = {
 	},
 	ranking: async ctx => {
 		const checkLoggedin = func.checkLAuthorised(ctx.session.authorised)
-		const list = await ContributionRankingList.rankedContribute()
+		const list = await ContributionRankingList.rankingList()
 		await ctx.render('rankingList', {check: checkLoggedin, list: list})
 	}
 }
