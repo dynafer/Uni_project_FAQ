@@ -56,5 +56,10 @@ module.exports = {
 		ctx.session.authorised = null
 		ctx.session.userid = null
 		ctx.redirect('/')
+	},
+	ranking: async ctx => {
+		const checkLoggedin = func.checkLAuthorised(ctx.session.authorised)
+		const list = await ContributionRankingList.rankedContribute()
+		await ctx.render('rankingList', {check: checkLoggedin, list: list})
 	}
 }

@@ -13,5 +13,6 @@ router.post('/register', koaBody, UserController.register)
 router.get('/login', UserController.loginForm)
 router.post('/login', UserController.login)
 router.get('/logout', UserController.logout)
+router.get('/ranking', UserController.ranking)
 
 module.exports = router
