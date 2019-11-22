@@ -1,15 +1,28 @@
 
 'use strict'
 
-const fs = require('fs')
+const fs = require('fs'),
+	sqlite = require('sqlite-async'),
 
-const RegisterService = require('../services/UserServices/RegisterService')
-const LoginService = require('../services/UserServices/LoginService')
-const UploadAvatarService = require('../services/UserServices/UploadAvatarService')
-const ContributeService = require('../services/UserServices/ContributeService')
-const ContributedRankingService = require('../services/UserServices/ContributedRankingService')
+	RegisterService = require('../services/UserServices/RegisterService'),
+	LoginService = require('../services/UserServices/LoginService'),
+	UploadAvatarService = require('../services/UserServices/UploadAvatarService'),
+	ContributeService = require('../services/UserServices/ContributeService'),
+	ContributedRankingService = require('../services/UserServices/ContributedRankingService')
+
+beforeAll(async() => {
+	const db = await sqlite.open('website.db')
+	const sql = `CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT,
+		user TEXT, pass TEXT, contribution INTEGER(100));`
+	await db.run(sql)
+})
 
 describe('register()', () => {
+
+	afterAll(async() => {
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE users;')
+	})
 
 	test('register a valid account', async done => {
 		expect.assertions(1)
@@ -47,10 +60,10 @@ describe('register()', () => {
 		done()
 	})
 
-	test('error if password and confirm password are incorrect', async done => {
+	test('error if password and confirm password are different', async done => {
 		expect.assertions(1)
 		await expect( RegisterService.register({user: 'doej', pass: 'password1', pass2: 'password2'}) )
-			.rejects.toEqual( Error('confirm password are incorrect') )
+			.rejects.toEqual( Error('confirm password is different from password') )
 		done()
 	})
 
@@ -60,27 +73,50 @@ describe('uploadAvatar()', () => {
 
 	test('upload a avatar with a valid username', async done => {
 		expect.assertions(1)
-		await UploadAvatarService.uploadAvatar({path:'public/avatars/avatar.png', type:'image/png', user:'doej'})
-		var valid = fs.existsSync('public/avatars/doej.png')
+		await UploadAvatarService.uploadAvatar({
+			path: 'unit tests/assets/image/testAvatar.png', type: 'image/png', user: 'doej'
+		})
+		const valid = fs.existsSync('public/avatars/doej.png')
 		expect(valid).toBe(true)
 		done()
 	})
 
 	test('Error if upload a avatar without username', async done => {
-		expect.assertions(1)
-		await expect( UploadAvatarService.uploadAvatar({path:'public/avatars/avatar.png', type:'image/png', user:''}) )
+		expect.assertions(3)
+		await expect( UploadAvatarService.uploadAvatar({
+			path: 'unit tests/assets/image/testAvatar.png', type: 'image/png', user: ''
+		}) )
 			.rejects.toEqual( Error('Error during uploading') )
+		await expect( UploadAvatarService.uploadAvatar({
+			path: 'unit tests/assets/image/testAvatar.png', type: 'image/png', user: null
+		}) )
+			.rejects.toEqual( Error('Access in a wrong way') )
+		await expect( UploadAvatarService.uploadAvatar({
+			path: 'unit tests/assets/image/testAvatar.png', type: 'image/png'
+		}) )
+			.rejects.toEqual( Error('Access in a wrong way') )
 		done()
 	})
 
-	afterAll(async () => {
+	afterAll(async() => {
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE users;')
 		fs.unlinkSync('public/avatars/doej.png')
 	})
 
 })
 
 describe('login()', () => {
-	
+
+	beforeAll(async() => {
+		await RegisterService.register({user: 'doej', pass: 'password', pass2: 'password'})
+	})
+
+	afterAll(async() => {
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE users;')
+	})
+
 	test('log in with valid credentials', async done => {
 		expect.assertions(2)
 		const valid = await LoginService.login({user: 'doej', pass: 'password'})
@@ -107,6 +143,16 @@ describe('login()', () => {
 
 describe('contribute()', () => {
 
+	beforeAll(async() => {
+		await RegisterService.register({user: 'doej', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'roej', pass: 'password', pass2: 'password'})
+	})
+
+	afterAll(async() => {
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE users;')
+	})
+
 	test('contribute with valid credentials', async done => {
 		expect.assertions(2)
 		const valid1 = await ContributeService.contribute({userId: 1, contribution: 50})
@@ -119,18 +165,18 @@ describe('contribute()', () => {
 	test('error if attempts without login', async done => {
 		expect.assertions(3)
 		await expect( ContributeService.contribute({userId: 0, contribution: -5}) )
-			.rejects.toEqual( Error(`You don't login yet`) )
+			.rejects.toEqual( Error('You don\'t login yet') )
 		await expect( ContributeService.contribute({userId: null, contribution: -5}) )
-			.rejects.toEqual( Error(`You don't login yet`) )
+			.rejects.toEqual( Error('You don\'t login yet') )
 		await expect( ContributeService.contribute({contribution: -5}) )
-			.rejects.toEqual( Error(`You don't login yet`) )
+			.rejects.toEqual( Error('You don\'t login yet') )
 		done()
 	})
 
 	test('error if the userid does not exist', async done => {
 		expect.assertions(1)
 		await expect( ContributeService.contribute({userId: 5123648231, contribution: -5}) )
-			.rejects.toEqual( Error(`Error during contributing`) )
+			.rejects.toEqual( Error('Error during contributing') )
 		done()
 	})
 
@@ -138,8 +184,15 @@ describe('contribute()', () => {
 
 describe('contributedranking()', () => {
 
+	afterAll(async() => {
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE users;')
+	})
+
 	test('get a selected user contribution rank with valid credentials', async done => {
 		expect.assertions(7)
+		await RegisterService.register({user: 'doej', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'doej1', pass: 'password', pass2: 'password'})
 		await RegisterService.register({user: 'doej2', pass: 'password', pass2: 'password'})
 		await RegisterService.register({user: 'doej3', pass: 'password', pass2: 'password'})
 		await RegisterService.register({user: 'doej4', pass: 'password', pass2: 'password'})
@@ -158,38 +211,32 @@ describe('contributedranking()', () => {
 		const valid5 = await ContributedRankingService.rankedContribute({userid: 5})
 		const valid6 = await ContributedRankingService.rankedContribute({userid: 6})
 		const valid7 = await ContributedRankingService.rankedContribute({userid: 7})
-		expect(valid1).toBe("goldStar")
-		expect(valid2).toBe("silverStar")
-		expect(valid3).toBe("bronzeStar")
-		expect(valid4).toBe("bronzeStar")
-		expect(valid5).toBe("bronzeStar")
-		expect(valid6).toBe("noStar")
-		expect(valid7).toBe("noStar")
+		expect(valid1).toBe('goldStar')
+		expect(valid2).toBe('silverStar')
+		expect(valid3).toBe('bronzeStar')
+		expect(valid4).toBe('bronzeStar')
+		expect(valid5).toBe('noStar')
+		expect(valid6).toBe('noStar')
+		expect(valid7).toBe('noStar')
 		done()
 	})
 
 	test('invalid user id', async done => {
 		expect.assertions(3)
 		await expect( ContributedRankingService.rankedContribute({userid: 0}) )
-			.rejects.toEqual( Error(`Error for assigning a user`) )
+			.rejects.toEqual( Error('Access in a wrong way') )
 		await expect( ContributedRankingService.rankedContribute({userid: null}) )
-			.rejects.toEqual( Error(`Error for assigning a user`) )
+			.rejects.toEqual( Error('Access in a wrong way') )
 		await expect( ContributedRankingService.rankedContribute({}) )
-			.rejects.toEqual( Error(`Error for assigning a user`) )
+			.rejects.toEqual( Error('Access in a wrong way') )
 		done()
 	})
 
 	test('error if the userid does not exist', async done => {
 		expect.assertions(1)
 		await expect( ContributedRankingService.rankedContribute({userid: 512361234512}) )
-			.rejects.toEqual( Error(`Error during getting information`) )
+			.rejects.toEqual( Error('Error during getting information') )
 		done()
 	})
 
-})
-
-afterAll(async () => {
-    const sqlite = require('sqlite-async')
-    const db = await sqlite.open("website.db")
-    await db.run("DROP TABLE users;")
 })

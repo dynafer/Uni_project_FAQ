@@ -44,7 +44,7 @@
 					{{/if_eq}}
 				{{/with}}
 				<div class="answerList">
-					{{#if noAnswer}}
+					{{#if_eq getAnswers 'nolist'}}
 					<table cellspacing="0" cellpadding="0">
 						<tr>
 							<td><h3>No Answers found</h3></td>
@@ -162,7 +162,7 @@
 								</table>
 							{{/with}}
 						{{/each}}
-					{{/if}}
+					{{/if_eq}}
 				</div>
 				{{#if check}}
 					{{#if_eq getInfo.solved 0}}
