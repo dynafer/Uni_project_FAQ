@@ -1,11 +1,11 @@
-/*eslint linebreak-style: ["error", "windows"]*/
 
 'use strict'
 
 const func = require('../function/function.general'),
 	LoginService = require('../services/UserServices/LoginService'),
 	RegisterService = require('../services/UserServices/RegisterService'),
-	UploadAvatarService = require('../services/UserServices/UploadAvatarService')
+	UploadAvatarService = require('../services/UserServices/UploadAvatarService'),
+	ContributionRankingList = require('../services/UserServices/ContributionRankingList')
 
 module.exports = {
 	home: async ctx => {

@@ -1,4 +1,4 @@
-/*eslint linebreak-style: ["error", "windows"]*/
+
 'use strict'
 
 const userModel = require('../../models/User'),

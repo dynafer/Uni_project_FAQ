@@ -1,4 +1,3 @@
-/*eslint linebreak-style: ["error", "windows"]*/
 
 'use strict'
 
@@ -13,8 +12,8 @@ function calculateRank(preUser, curUser, ranked, nextRank) {
 	if(preUser === curUser) {
 		nextRank = nextRank + 1
 	} else if(nextRank !== 0) {
-		ranked = ranked + nextRank
-		nextRank = 0
+		ranked += nextRank
+		nextRank = 1
 	} else {
 		ranked = ranked + 1
 	}

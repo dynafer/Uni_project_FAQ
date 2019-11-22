@@ -1,4 +1,4 @@
-/*eslint linebreak-style: ["error", "windows"]*/
+
 'use strict'
 
 const Router = require('koa-router')
