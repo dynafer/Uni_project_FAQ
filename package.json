@@ -12,18 +12,20 @@
     "start": "node index.js",
     "jsdoc": "node_modules/.bin/jsdoc -c jsdoc.conf",
     "linter": "node_modules/.bin/eslint .",
-    "test": "./node_modules/.bin/jest --coverage 'unit tests/'"
+    "test": "jest --coverage --detectOpenHandles --runInBand",
+    "unit": "node_modules/.bin/jest --coverage --runInBand 'unit tests/'"
   },
   "jest": {
     "projects": [
       "<rootDir>/jest-test.config.js"
     ]
   },
-  "author": "",
+  "author": "Haseong Kim",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.6",
     "bcrypt-promise": "^2.0.0",
+    "fs-extra": "^8.1.0",
     "koa": "^2.6.2",
     "koa-body": "^4.0.8",
     "koa-bodyparser": "^4.2.1",
