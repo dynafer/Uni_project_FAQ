@@ -35,7 +35,8 @@
     "koa-static": "^5.0.0",
     "koa-views": "^6.1.5",
     "mime-types": "^2.1.22",
-    "sqlite-async": "^1.0.12"
+    "sqlite-async": "^1.0.12",
+    "supertest": "^4.0.2"
   },
   "devDependencies": {
     "coverage": "^0.4.1",
