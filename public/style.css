@@ -14,6 +14,10 @@ body {
   display: table;
   width: 50%;
 }
+.rankingList{
+  display: table;
+  width: 35%;
+}
 .listHeader {
   background-color: #EEE;
   display: table-header-group;
