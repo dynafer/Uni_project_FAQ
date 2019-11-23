@@ -46,4 +46,4 @@ function getAUserRank(allUsers, userid) {
 	return 'noStar'
 }
 
-module.exports = { checkRegisterInputValid, getAUserRank }
+module.exports = { checkRegisterInputValid, findAUserRank, getAUserRank }
