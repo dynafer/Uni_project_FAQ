@@ -9,18 +9,11 @@ const func = require('../function/function.general'),
 
 module.exports = {
 	home: async ctx => {
-		try {
-			const checkLoggedin = func.checkLAuthorised(ctx.session.authorised)
-			await ctx.render('index', {check: checkLoggedin})
-		} catch(err) {
-			console.log(err)
-			await ctx.render('error', {message: err.message})
-		}
+		const checkLoggedin = func.checkLAuthorised(ctx.session.authorised)
+		await ctx.render('index', {check: checkLoggedin})
 	},
 	loginForm: async ctx => {
 		const data = {}
-		if(ctx.query.msg) data.msg = ctx.query.msg
-		if(ctx.query.user) data.user = ctx.query.user
 		await ctx.render('login', data)
 	},
 	login: async ctx => {

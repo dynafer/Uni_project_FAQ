@@ -30,6 +30,13 @@ describe('UserConstructor()', () => {
 		expect(user.db.filename).toBe(':memory:')
 		done()
 	})
+
+	afterAll(async() => {
+		const sqlite = require('sqlite-async')
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE users;')
+	})
+
 })
 
 describe('getUsers()', () => {
@@ -40,6 +47,13 @@ describe('getUsers()', () => {
 			.rejects.toEqual( Error('Access in a wrong way') )
 		done()
 	})
+
+	afterAll(async() => {
+		const sqlite = require('sqlite-async')
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE users;')
+	})
+
 })
 
 describe('register()', () => {
@@ -49,6 +63,13 @@ describe('register()', () => {
 		await expect(user.register({})).rejects.toEqual( Error('data and salt arguments required') )
 		done()
 	})
+
+	afterAll(async() => {
+		const sqlite = require('sqlite-async')
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE users;')
+	})
+
 })
 
 describe('login()', () => {
@@ -65,6 +86,13 @@ describe('login()', () => {
 		await expect(user.login({})).rejects.toEqual( Error('Cannot read property \'pass\' of undefined') )
 		done()
 	})
+
+	afterAll(async() => {
+		const sqlite = require('sqlite-async')
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE users;')
+	})
+
 })
 
 describe('contribute()', () => {
@@ -75,6 +103,13 @@ describe('contribute()', () => {
 			.rejects.toEqual( Error('Access in a wrong way') )
 		done()
 	})
+
+	afterAll(async() => {
+		const sqlite = require('sqlite-async')
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE users;')
+	})
+
 })
 
 //FAQ Model
@@ -92,6 +127,16 @@ describe('FAQConstructor()', () => {
 		expect(faq.db.filename).toBe(':memory:')
 		done()
 	})
+
+	afterAll(async() => {
+		const sqlite = require('sqlite-async')
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE questions;')
+		await db.run('DROP TABLE questionThumbnails;')
+		await db.run('DROP TABLE answers;')
+		await db.run('DROP TABLE answersRate;')
+	})
+
 })
 
 describe('newQuestion()', () => {
@@ -102,6 +147,15 @@ describe('newQuestion()', () => {
 			.rejects.toEqual( Error('Access in a wrong way') )
 		done()
 	})
+
+	afterAll(async() => {
+		const sqlite = require('sqlite-async')
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE questions;')
+		await db.run('DROP TABLE questionThumbnails;')
+		await db.run('DROP TABLE answers;')
+		await db.run('DROP TABLE answersRate;')
+	})
 })
 
 describe('QuestionThumbnail()', () => {
@@ -111,6 +165,15 @@ describe('QuestionThumbnail()', () => {
 		await expect(faq.QuestionThumbnail({id: 174921}))
 			.rejects.toEqual( Error('The thumbnail doesn\'t not exist') )
 		done()
+	})
+
+	afterAll(async() => {
+		const sqlite = require('sqlite-async')
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE questions;')
+		await db.run('DROP TABLE questionThumbnails;')
+		await db.run('DROP TABLE answers;')
+		await db.run('DROP TABLE answersRate;')
 	})
 })
 
@@ -126,6 +189,15 @@ describe('newAnswer()', () => {
 			.rejects.toEqual( Error('Access in a wrong way') )
 		done()
 	})
+
+	afterAll(async() => {
+		const sqlite = require('sqlite-async')
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE questions;')
+		await db.run('DROP TABLE questionThumbnails;')
+		await db.run('DROP TABLE answers;')
+		await db.run('DROP TABLE answersRate;')
+	})
 })
 
 describe('flagAnswer()', () => {
@@ -137,6 +209,15 @@ describe('flagAnswer()', () => {
 		await expect(faq.flagAnswer({answerId: 1}))
 			.rejects.toEqual( Error('Access in a wrong way') )
 		done()
+	})
+
+	afterAll(async() => {
+		const sqlite = require('sqlite-async')
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE questions;')
+		await db.run('DROP TABLE questionThumbnails;')
+		await db.run('DROP TABLE answers;')
+		await db.run('DROP TABLE answersRate;')
 	})
 })
 
@@ -152,14 +233,13 @@ describe('newRate()', () => {
 			.rejects.toEqual( Error('Access in a wrong way') )
 		done()
 	})
-})
 
-afterAll(async() => {
-	const sqlite = require('sqlite-async')
-	const db = await sqlite.open('website.db')
-	await db.run('DROP TABLE users;')
-	await db.run('DROP TABLE questions;')
-	await db.run('DROP TABLE questionThumbnails;')
-	await db.run('DROP TABLE answers;')
-	await db.run('DROP TABLE answersRate;')
+	afterAll(async() => {
+		const sqlite = require('sqlite-async')
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE questions;')
+		await db.run('DROP TABLE questionThumbnails;')
+		await db.run('DROP TABLE answers;')
+		await db.run('DROP TABLE answersRate;')
+	})
 })
