@@ -22,26 +22,16 @@ const jimp = require('jimp'),
 
 module.exports = {
 	questionList: async ctx => {
-		try {
-			const checkLoggedin = func.checkLAuthorised(ctx.session.authorised)
-			const getList = await QuestionListService.getQuestions({})
-			for(let i = 0; i < getList.length; i ++) {
-				getList[i].rankedUser = await ContributedRankingService.rankedContribute({userid: getList[i].authorId})
-			}
-			await ctx.render('list', {check: checkLoggedin, list: getList})
-		} catch(err) {
-			console.log(err)
-			await ctx.render('error', {message: err.message})
+		const checkLoggedin = func.checkLAuthorised(ctx.session.authorised)
+		const getList = await QuestionListService.getQuestions({})
+		for(let i = 0; i < getList.length; i ++) {
+			getList[i].rankedUser = await ContributedRankingService.rankedContribute({userid: getList[i].authorId})
 		}
+		await ctx.render('list', {check: checkLoggedin, list: getList})
 	},
 	newQuestionForm: async ctx => {
-		try {
-			const checkLoggedin = func.checkLAuthorised(ctx.session.authorised)
-			await ctx.render('writeQuestion', {check: checkLoggedin})
-		} catch(err) {
-			console.log(err)
-			await ctx.render('error', {message: err.message})
-		}
+		const checkLoggedin = func.checkLAuthorised(ctx.session.authorised)
+		await ctx.render('writeQuestion', {check: checkLoggedin})
 	},
 	newQuestion: async ctx => {
 		try {
@@ -65,7 +55,6 @@ module.exports = {
 			const checkLoggedin = func.checkLAuthorised(ctx.session.authorised),
 			    detail = await DetailQuestionService.detailsQuestion({ faqId: parseInt(ctx.params.id) })
 			detail.rankedUser = await ContributedRankingService.rankedContribute({userid: detail.authorId})
-			if(detail.nolist !== undefined) throw Error('No FAQ found')
 			const answerList = await AnswerListService.getAnswers({
 				faqId: parseInt(ctx.params.id),
 				sessionid: ctx.session.userid })
@@ -115,9 +104,7 @@ module.exports = {
 				flagtype: parseInt(ctx.params.flagtype)
 			})
 			const getAnswer = await AnswerListService.getAnswers({ id: parseInt(ctx.params.answerid) })
-			if(getAnswer.nolist !== undefined) throw Error('Error during contributing')
-			const addNumber = 50,
-				minusNumber = -5
+			const addNumber = 50, minusNumber = -5
 			const contribution = parseInt(ctx.params.flagtype) === 1 ? addNumber : minusNumber
 			await ContributeService.contribute({userId: getAnswer[0].authorId, contribution: contribution})
 			ctx.redirect(`/faq/${ctx.params.id}`)

@@ -8,7 +8,8 @@ const fs = require('fs'),
 	LoginService = require('../services/UserServices/LoginService'),
 	UploadAvatarService = require('../services/UserServices/UploadAvatarService'),
 	ContributeService = require('../services/UserServices/ContributeService'),
-	ContributedRankingService = require('../services/UserServices/ContributedRankingService')
+	ContributedRankingService = require('../services/UserServices/ContributedRankingService'),
+	ContributionRankingList = require('../services/UserServices/ContributionRankingList')
 
 beforeAll(async() => {
 	const db = await sqlite.open('website.db')
@@ -239,4 +240,45 @@ describe('contributedranking()', () => {
 		done()
 	})
 
+})
+
+describe('ContributionRankingList()', () => {
+
+	afterAll(async() => {
+		const db = await sqlite.open('website.db')
+		await db.run('DROP TABLE users;')
+	})
+
+	test('get an empty list', async done => {
+		expect.assertions(1)
+		const list = await ContributionRankingList.rankingList()
+		expect(list.nolist).toBe(true)
+		done()
+	})
+
+	test('get a user contribution ranking list', async done => {
+		expect.assertions(7)
+		await RegisterService.register({user: 'doej', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'doej1', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'doej2', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'doej3', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'doej4', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'doej5', pass: 'password', pass2: 'password'})
+		await RegisterService.register({user: 'doej6', pass: 'password', pass2: 'password'})
+		await ContributeService.contribute({userId: 1, contribution: 150})
+		await ContributeService.contribute({userId: 2, contribution: 130})
+		await ContributeService.contribute({userId: 3, contribution: 110})
+		await ContributeService.contribute({userId: 4, contribution: 110})
+		await ContributeService.contribute({userId: 5, contribution: 80})
+		await ContributeService.contribute({userId: 6, contribution: 20})
+		const list = await ContributionRankingList.rankingList()
+		expect(list[0].rank).toBe(1)
+		expect(list[1].rank).toBe(2)
+		expect(list[2].rank).toBe(3)
+		expect(list[3].rank).toBe(3)
+		expect(list[4].rank).toBe(5)
+		expect(list[5].rank).toBe(6)
+		expect(list[6].rank).toBe(7)
+		done()
+	})
 })
